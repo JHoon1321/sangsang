@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gr.ssgb.admin.model.AdminDAO">
+
+	<select id="checkPwd" parameterType="adminVo" resultType="string">
+		select ad_pwd from admin where ad_id = #{adId} 
+	</select>
+	
+	<select id="selectTotalProfit" parameterType="monthVo" resultType="int">
+		select sum(total) 
+		from
+		(
+		    select (c_price * fpnum) as total 
+		    from profitview
+		    <![CDATA[
+		    where b_req_date > TO_DATE(#{startDate}) and b_req_date < TO_DATE(#{endDate})
+		    ]]>
+		)
+	</select>
+	<select id="selectTotalClassCnt" resultType="int">
+		select count(*) from hostclass
+	</select>
+	
+	<select id="selectRatio" resultType="classRatioVo">
+		select * from classratioview
+	</select>
+	
+	<select id="selectNewHostCnt" parameterType="monthVo" resultType="int">
+		select count(*) from host
+		<![CDATA[
+		    where regdate > TO_DATE(#{startDate}) and regdate < TO_DATE(#{endDate})
+		    ]]>
+	</select>
+	<select id="selectNewMemberCnt" parameterType="monthVo" resultType="int">
+		select count(*) from member
+			<![CDATA[
+			    where regdate > TO_DATE(#{startDate}) and regdate < TO_DATE(#{endDate})
+			    ]]>
+	</select>
+	
+	<select id="selectRefundList" parameterType="searchVo" resultType="map">
+		select *
+		from
+		(
+		    select rownum as RNUM, A.*
+		    from
+		    (
+		        select * from payview
+				where refund='refund' and refundResult is null
+				order by pay_date desc		        
+		    )A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+			and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]> 
+	</select>
+	
+	<select id="selectTotalrefund" resultType="int">
+		select count(*) from orders where refund='refund'
+	</select>
+	
+	<update id="updateAllRefund">
+		update orders
+		set refundResult = 'done'
+		where refund='refund'
+	</update>
+	
+	<update id="cancleRefund" parameterType="orderVo">
+		update orders
+		set refund= 'payed', reason=''
+		where merchant_uid=#{merchantUid}
+	</update>
+</mapper>

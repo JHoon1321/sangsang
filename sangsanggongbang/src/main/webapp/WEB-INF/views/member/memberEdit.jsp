@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="../inc/top.jsp" %>
+<%@ include file="../inc/new_top_user.jsp" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <script src="https://kit.fontawesome.com/2db6e9a548.js" crossorigin="anonymous"></script>
 <script src="${pageContext.request.contextPath}/resources/assets/js/jquery-3.6.0.min.js"></script>
@@ -29,9 +29,9 @@ $(function(){
 		}
 	});
 	
-	$('#additional').submit(function(){
+	$('#memberEdit').submit(function(){
 		var cardnum = $('#cardNum1').val()+$('#cardNum2').val()+$('#cardNum3').val()+$('#cardNum4').val();
-		$('#cardnum').val('cardnum');
+		$('#cardNum').val(cardnum);
 	});
 	
 	
@@ -83,26 +83,22 @@ var InputImage =
     <div class="card border-light p-2">
         <div class="card-body p-2">
             <div class="profile-thumbnail small-thumbnail mx-auto">
-            	<c:if test="${sessionScope.snsCheck=='y' }">
-                	<img src="${vo.mFilename }" class="card-img-top rounded-circle border-white" alt="Joseph Portrait">
+            	<c:if test="${!empty sessionScope.mFilename }">
+                	<img src="<c:url value='/resources/file_upload/${sessionScope.mFilename }'/>" style = "width:129; height:129;" class="card-img-top rounded-circle border-white" alt="Joseph Portrait"
+                	onerror="this.src='${sessionScope.mFilename }'">
                 </c:if>
-                <c:if test="${sessionScope.snsCheck=='n' }">
-                	<c:if test="${vo.mFilename!=null }">
-                		<img src="${pageContext.request.contextPath }/resources/file_upload/${vo.mFilename }" class="card-img-top rounded-circle border-white">
-                	</c:if>
-                	<c:if test="${vo.mFilename==null }">
-                		<img src="${pageContext.request.contextPath }/resources/assets/img/default.png" class="card-img-top rounded-circle border-white">
-                	</c:if>
+                <c:if test="${empty sessionScope.mFilename }">
+                	<img src="<c:url value='/resources/file_upload/default.png'/>" class="card-img-top rounded-circle border-white" alt="Joseph Portrait">
                 </c:if>
             </div>
-            <h2 class="h5 font-weight-normal text-center mt-3 mb-0">${vo.mNickname}</h2>
+            <h2 class="h5 font-weight-normal text-center mt-3 mb-0">${sessionScope.mNickname}</h2>
             <div class="list-group dashboard-menu list-group-sm mt-4">
-                <a href="./account.html" class="d-flex list-group-item list-group-item-action ">Overview <span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
-                <a href="<c:url value='/member/memberEdit'/>" class="d-flex list-group-item list-group-item-action  active ">회원정보 수정<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
-                <a href="./my-items.html" class="d-flex list-group-item list-group-item-action ">My Items<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
-                <a href="./security.html" class="d-flex list-group-item list-group-item-action ">Security<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
-                <a href="./billing.html" class="d-flex list-group-item list-group-item-action ">Billing<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
-                <a href="./messages.html" class="d-flex list-group-item list-group-item-action  border-0">Messages<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
+               <a href="<c:url value='/dashboard/user/payment/myAccount'/>" class="d-flex list-group-item list-group-item-action">내 정보조회 <span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
+                <a href="<c:url value='/member/memberEditChkPwd'/>" class="d-flex list-group-item list-group-item-action active">회원정보 수정<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
+                <a href="<c:url value='/dashboard/user/payment/myPayment'/>" class="d-flex list-group-item list-group-item-action ">내 결제내역<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
+                <a href="<c:url value='/dashboard/user/payment/refundList'/>" class="d-flex list-group-item list-group-item-action">환불내역조회<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
+                <a href="<c:url value='/member/interestClass'/>" class="d-flex list-group-item list-group-item-action ">내 관심클래스<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
+                <a href="<c:url value='/member/memberEditChkPwd2'/>" class="d-flex list-group-item list-group-item-action  border-0">회원탈퇴<span class="icon icon-xs ml-auto"><span class="fas fa-chevron-right"></span></span> </a>
             </div>
         </div>
     </div>
@@ -112,10 +108,11 @@ var InputImage =
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-10 d-flex">
-                    <a href="./account.html" class="list-group-item list-group-item-action border-0 ">Overview</a>
-                    <a href="./settings.html" class="list-group-item list-group-item-action border-0  active ">Settings</a>
-                    <a href="./my-items.html" class="list-group-item list-group-item-action d-none d-sm-block border-0 ">My Items</a>
-                    <a href="./security.html" class="list-group-item list-group-item-action d-none d-md-block border-0 ">Security</a>
+                   <a href="<c:url value='/dashboard/user/payment/myAccount'/>" class="list-group-item list-group-item-action border-0 ">내 정보조회</a>
+                    <a href="<c:url value='/member/memberEditChkPwd'/>" class="list-group-item list-group-item-action border-0 active">회원정보 수정</a>
+                    <a href="<c:url value='/dashboard/user/payment/myPayment'/>" class="list-group-item list-group-item-action border-0   ">내 결제내역</a>
+                    <a href="<c:url value='/dashboard/user/payment/refundList'/>" class="list-group-item list-group-item-action d-none d-sm-block border-0 ">환불내역조회</a>
+                    <a href="<c:url value='/member/interestClass'/>" class="list-group-item list-group-item-action d-none d-md-block border-0 active">내 관심클래스</a>
                 </div>
                 <div class="col-2 d-flex justify-content-center">
                     <div class="btn-group dropleft">
@@ -126,10 +123,9 @@ var InputImage =
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="./my-items.html" class="list-group-item list-group-item-action d-sm-none border-0 ">My Items</a>
-                            <a href="./security.html" class="list-group-item list-group-item-action d-md-none border-0 ">Security</a>
-                            <a href="./billing.html" class="list-group-item list-group-item-action border-0 ">Billing</a>
-                            <a href="./messages.html" class="list-group-item list-group-item-action border-0 ">Messages</a> 
+                           <a href="<c:url value='/dashboard/user/payment/refundList'/>" class="list-group-item list-group-item-action d-sm-none border-0 ">환불내역조회</a>
+                            <a href="<c:url value='/member/interestClass'/>" class="list-group-item list-group-item-action d-md-none border-0 ">내 관심클래스</a>
+                            <a href="<c:url value='/member/memberEditChkPwd2'/>" class="list-group-item list-group-item-action border-0 ">회원탈퇴</a>
                         </div>
                     </div>
                 </div>
@@ -137,6 +133,7 @@ var InputImage =
         </div>
     </div>
 </div>
+
 
                     <div class="col-12 col-lg-8">
                         <div class="row">
@@ -147,40 +144,27 @@ var InputImage =
                                         <div class="card border-light p-2" style ="margin-bottom: 20px">
 								        <div class="card-body p-2">
 								        <div style="float: left; margin-left: 0px; margin-top:0px; " >
-								            	<c:if test="${sessionScope.snsCheck=='y' }">
+								            	<c:if test="${sessionScope.mFilename!='default.png' }">
 								            		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
 								            			<div id="older">
-								                			<img src="${vo.mFilename }" id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
+								                			<img src="${pageContext.request.contextPath }/resources/file_upload/${vo.mFilename }" style = "width:129; height:129;" id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
 								                		</div>
 								           			 </div>
 								           			  <div class="input-group mb-3"  style = "text-align: center;">
-														  <input type="file" id="inputGroupFile02" class="form-control " name = "mFilename"onchange="InputImage();" style="display: none;" value="${cookie.mFilename.value }">
-														  <label class="input-group-text btn btn-outline-primary" for="inputGroupFile02" style="margin-top: 30px">프로필 사진 업로드하기</label>
+														  <input type="file" id="upfile" class="form-control " name = "upfile"onchange="InputImage();" style="display: none;">
+														  <label class="input-group-text btn btn-outline-primary" for="upfile" style="margin-top: 30px">프로필 사진 업로드하기</label>
 													  </div>
 								                </c:if>
-								                <c:if test="${sessionScope.snsCheck=='n' }">
-								                	<c:if test="${vo.mFilename!=null }">
-									                	<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
-									            			<div id="older">
-									                			<img src="${pageContext.request.contextPath }/resources/file_upload/${vo.mFilename }" class="card-img-top rounded-circle border-white">
-									                		</div>
-									            		</div>
-									            		<div class="input-group mb-3"  style = "text-align: center;">
-															<input type="file" name ="upfile" id="upfile" class="form-control "  onchange="InputImage();" style="display: none;">
-															<label class="input-group-text btn btn-outline-primary" for="upfile" style="margin-top: 30px">프로필 사진 업로드하기</label>
-														</div>
-							                		</c:if>
-								                	<c:if test="${vo.mFilename==null }">
-								                		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
-									            			<div id="older">
-										                		<img src="${pageContext.request.contextPath }/resources/assets/img/default.png" class="card-img-top rounded-circle border-white">
-									                		</div>
-									            		</div>
-									            		<div class="input-group mb-3"  style = "text-align: center;">
-															<input type="file" name ="upfile" id="upfile" class="form-control "  onchange="InputImage();" style="display: none;">
-															<label class="input-group-text btn btn-outline-primary" for="upfile" style="margin-top: 30px">프로필 사진 업로드하기</label>
-														</div>
-							                		</c:if>
+								                <c:if test="${sessionScope.mFilename=='default.png' }">
+							                		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
+								            			<div id="older">
+									                		<img src="${pageContext.request.contextPath }/resources/assets/img/default.png" style = "width:129px; height:129px;" class="card-img-top rounded-circle border-white">
+								                		</div>
+								            		</div>
+								            		<div class="input-group mb-3"  style = "text-align: center;">
+														<input type="file" name ="upfile" id="upfile" class="form-control "  onchange="InputImage();" style="display: none;">
+														<label class="input-group-text btn btn-outline-primary" for="upfile" style="margin-top: 30px">프로필 사진 업로드하기</label>
+													</div>
 								                </c:if>
 											</div>
 										  <div class="col-md-8 mb-3" style = "float: left; margin-left: 0px; margin-top:10px;" >
@@ -193,6 +177,8 @@ var InputImage =
                                            				<input name ="mName" class="form-control" id="mName" placeholder="성명" type="text" value="${vo.mName}" >
                                            				<input name ="mNo" class="form-control" id="mNo" placeholder="성명" type="hidden" value="${vo.mNo}" >
                                            				<input name ="mId" class="form-control" id="mId" placeholder="성명" type="hidden" value="${vo.mId}" >
+                                           				<input name ="mOriginalname" class="form-control" id="mOriginalname"  type="hidden" value="${vo.mOriginalname}" >
+                                           				<input name ="mFilesize" class="form-control" id="mFilesize" type="hidden" value="${vo.mFilesize}" >
                                            				<input type="hidden" name="oldFileName" value="${vo.mFilename}">
                                             		</div>
                                                 </div>
@@ -273,7 +259,7 @@ var InputImage =
                                     </div>
                                     <!-- End of Form -->
                                     <!-- Form -->
-	                              	<div class="row">
+	                              	<!--<div class="row">
 		                                <div class="col-md-6 mb-3">
 			                                <div class="form-group">
 				                                <label for="password">기본결제수단 변경하기</label>
@@ -311,7 +297,7 @@ var InputImage =
 		                            </div>
                                     <!-- End of Form -->
                                    
-                                    <!-- Form -->
+                                    <!-- Form 
                                     
                                     <div id="accInput" class="row" 
                                     <c:if test="${payVo.pType=='카드' }">
@@ -382,7 +368,7 @@ var InputImage =
                                         </div>
                                     <!-- End of Form -->
                                     
-                                    <!-- Form -->
+                                    <!-- Form 
                                     <div id="cardInput" class="row" 
 									<c:if test="${payVo.pType!='카드' }">
                                     	style="display: none"
@@ -442,20 +428,24 @@ var InputImage =
                                                      <label for="cardNum">카드번호</label>
                                                      <div class="input-group mb-3">
                                                      	<c:set var="cardNum" value="${payVo.cardNum }"/>
-														<input type="text" id="cardNum1" class="form-control" maxlength="4" aria-label="Username" value="${fn:substring(cardNum,0,4) }">
+														<input type="text" id="cardNum1" class="form-control" maxlength="4" aria-label="Username" 
+														value='${fn:substring(cardNum ,0,4) }'>
 														<span class="input-group-text">-</span>
-														<input type="text" id="cardNum2" class="form-control" maxlength="4" aria-label="Server" value="${fn:substring(cardNum,4,8) }">
+														<input type="text" id="cardNum2" class="form-control" maxlength="4" aria-label="Server" 
+														value="${fn:substring(cardNum,4,8) }">
 														<span class="input-group-text">-</span>
-														<input type="text" id="cardNum3" class="form-control" maxlength="4" aria-label="Server" value="${fn:substring(cardNum,8,12) }">
+														<input type="text" id="cardNum3" class="form-control" maxlength="4" aria-label="Server" 
+														value="${fn:substring(cardNum,8,12) }">
 														<span class="input-group-text">-</span>
-														<input type="password" id="cardNum4" class="form-control" maxlength="4" aria-label="Server" value="${fn:substring(cardNum,12,15) }">
+														<input type="password" id="cardNum4" class="form-control" maxlength="4" aria-label="Server" 
+														value="${fn:substring(cardNum ,12,16) }">
 														<input type = "hidden" name = "cardNum" id="cardNum">
 													</div>
                                                 </div>
                                             </div>
                                         </div>
                                     <!-- End of Form --> 
-                                    <!-- Form -->
+                                    <!-- Form 
                                     	<div id="cvc" class="row" style="display: none">
                                             <div class="col-md-7 mb-3">
                                                 <div class="form-group">
@@ -478,18 +468,18 @@ var InputImage =
                                             </div>
                                         </div>
                                     <!-- End of Form -->
-                                     <!-- Form -->
+                                     <!-- Form 
                                     <label for="cPwd">결제비밀번호 설정</label>
                                    	<div class="input-group mb-4">
                                 		<div class="input-group-prepend">
                                             <span class="input-group-text"><span class="fas fa-unlock-alt"></span></span>
                                         </div>
                                        	<input name ="cPwd" class="form-control" id="cPwd" maxlength="6"  placeholder="결제비밀번호를 설정하세요.(숫자 6자리)" type="password" value="${payVo.cPwd }">
-                                    </div>
+                                    </div>-->
                                      <div class="mt-3" style="text-align: center;">
                                             <button type="submit" class="btn btn-primary" >수정하기</button>
                                         </div>
-                                    <!-- End of Form -->
+                                    
                                     </form>
                                 </div>
                             </div>

@@ -18,6 +18,11 @@ public interface MemberInquiryService {
 	List<Map<String, Object>> selectBanAll(SearchVO searchVo);
 	int selectBanTotalRecord(SearchVO searchVo);
 	
-	int insertBan(BanVO vo);
-	int banDelete(int mNo);
+	int insertBan(BanVO bVo);
+	int deleteBan(BanVO bVo);
+	
+	Boolean checkBan(String mId);
+	
+	List<Map<String, Object>> classUser(String hId);
+	int selectTotalClassUser(String hId); 
 }

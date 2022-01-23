@@ -30,8 +30,9 @@
 		});
 		
 		$('#additional').submit(function(){
-			var cardnum = $('#cardnum1').val()+$('#cardnum2').val()+$('#cardnum3').val()+$('#cardnum4').val();
-			$('#cardnum').val('cardnum');
+			var cardnum = $('#cardNum1').val()+$('#cardNum2').val()+$('#cardNum3').val()+$('#cardNum4').val();
+			$('#cardNum').val(cardnum);
+			console.log(cardnum);
 			if($('snsCheck').val()=='y'){
 				if($('#pwd').val().length<1){
 					alert('비밀번호를 입력하세요');
@@ -83,37 +84,9 @@
 				alert('우편번호 검색 시 주소는 자동으로 입력됩니다.');
 				$('#address').focus();
 				event.preventDefault();
-			}else if ($('#mAddressDetail').val()<1){
+			}else if ($('#addressDetail').val().length<1){
 				alert('상세주소를 입력하세요.');
-				$('#mAddressDetail').focus();
-				event.preventDefault();
-			}else if ($('#pType option:selected').val()<1){
-				alert('결제유형을 입력하세요.');
-				$('#pType').focus();
-				event.preventDefault();
-			}else if ($('#nCard').val()<1){
-				alert('결제수단 별칭을 입력하세요.');
-				$('#nCard').focus();
-				event.preventDefault();
-			}else if ($('#pType option:selected').val()=='자동이체'&& $('#bankName').val()<1){
-				alert('은행명을 선택하세요.');
-				$('#bankName').focus();
-				event.preventDefault();
-			}else if ($('#pType option:selected').val()=='자동이체'&& $('#accNum').val()<1){
-				alert('계좌번호를 입력하세요.');
-				$('#accNum').focus();
-				event.preventDefault();
-			}else if ($('#pType option:selected').val()=='카드' && $('#cardCom option:selected').val()<1){
-				alert('카드사를 선택하세요.');
-				$('#cardCom').focus();
-				event.preventDefault();
-			}else if ($('#pType option:selected').val()=='카드' && !validate_phone($('#cardNum').val())){
-				alert('카드번호는 숫자만 입력가능합니다.');
-				$('#cardNum').focus();
-				event.preventDefault();
-			}else if ($('#pType option:selected').val()=='카드' && $('#cardNum').val()!=16){
-				alert('카드번호 입력을 완료하세요.');
-				$('#cardNum').focus();
+				$('#addressDetail').focus();
 				event.preventDefault();
 			}else if(!$('#termChk2').is(':checked')){
 				alert('이용약관에 동의해야합니다.');
@@ -136,7 +109,6 @@
 				$('#message2').css('color', 'red');
 				$('#message2').html('비밀번호 보안수준 : 위험');
 			}
-			
 		});
 		$('#pwd2').keyup(function(){
 			var pwd2 = $(this).val();
@@ -154,11 +126,11 @@
 	
 	
 	
-	function validate_phone(tel){
-		var pattern = new RegExp(/^[0-9]*$/g);
-		
-		return pattern.test(tel);
-	}
+function validate_phone(tel){
+	var pattern = new RegExp(/^[0-9]*$/g);
+	
+	return pattern.test(tel);
+}
 function kakaopost() {
     new daum.Postcode({
         oncomplete: function(data) {
@@ -229,45 +201,12 @@ var InputImage =
                                         <input name="snsCheck" readonly="readonly" class="form-control" id="exampleInputIcon4" type="hidden" aria-label="email adress" value="${sessionScope.snsCheck}">
                                     </div>
                                 </div>
-                                <c:if test="${sessionScope.snsCheck=='y' }">
-	                                <!-- Form -->
-	                              	<div class="row">
-		                                <div class="col-md-6 mb-3">
-			                                <div class="form-group">
-				                                <label for="password">비밀번호</label>
-				                           		<div class="input-group">
-					                                <div class="input-group-prepend">
-					                                	<span class="input-group-text"><span class="fas fa-unlock-alt"></span></span>
-					                                </div>
-					                            	<input name ="pwd" class="form-control" id="pwd" placeholder="상상공방에서 사용할 비밀번호를 설정하세요." type="password" aria-label="Password" >
-			                            		</div>
-			                            		<div>
-                                    				<span id="message2" style="visibility:hidden">비밀번호를 입력하세요.</span>
-                                    			</div>
-			                        		</div>
-		                                </div>
-		                                <div class="col-md-6 mb-3">
-		                                	<div class="form-group">
-		                                    	<label for="password">비밀번호 확인</label>
-		                                     	<div class="input-group">
-		                                        	<div class="input-group-prepend">
-		                                            	<span class="input-group-text"><span class="fas fa-unlock-alt"></span></span>
-		                                        	</div>
-		                                      		<input name ="pwd2" class="form-control" id="pwd2" placeholder="2차 비밀번호를 입력하세요." type="password" aria-label="Password">
-		                                      	</div>
-		                                      	<div>
-                                    				<span id="message3" style="visibility:hidden">비밀번호를 입력하세요.</span>
-                                    			</div>
-		                                  	</div>
-		                                 </div>
-		                             </div>
-                                    <!-- End of Form -->
-                               </c:if>
+                                
                                     <!-- Form -->
                                     <div class="card border-light p-2" style ="margin-bottom: 20px">
 								        <div class="card-body p-2">
 								        <div style="float: left; margin-left: 50px; margin-top:15px; " >
-								            	<c:if test="${!empty sessionScope.mFilename}">
+								            	<c:if test="${sessionScope.mFilename!='default.png'}">
 								            		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
 								            			<div id="older">
 								                			<img src="${sessionScope.mFilename }" id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
@@ -278,7 +217,7 @@ var InputImage =
 														  <label class="input-group-text btn btn-outline-primary" for="inputGroupFile02" style="margin-top: 30px">프로필 사진 업로드하기</label>
 													  </div>
 								                </c:if>
-								                <c:if test="${empty sessionScope.mFilename }">
+								                <c:if test="${sessionScope.mFilename=='default.png' }">
 								            		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
 								            			<div id="older">
 								                			<img src="${pageContext.request.contextPath }/resources/assets/img/default.png" id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
@@ -316,10 +255,10 @@ var InputImage =
 								    </div>
                                     <!-- Form -->
                                     	<div class="row">
-                                            <div class="col-md-7 mb-3">
+                                            <div class="col-md-7">
                                                 <div class="form-group">
                                                     <label for="phone">핸드폰번호</label>
-                                                    <div class="input-group mb-4">
+                                                    <div class="input-group">
 			                                            <div class="input-group-prepend">
 			                                                <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
 			                                            </div>
@@ -327,10 +266,10 @@ var InputImage =
                                             		</div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-5 mb-3">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label for="bday">생년월일</label>
-                                                    <div class="input-group mb-4">
+                                                    <div class="input-group">
 			                                            <div class="input-group-prepend">
 			                                                <span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
 			                                            </div>
@@ -342,10 +281,10 @@ var InputImage =
                                     <!-- End of Form -->
                                      <!-- Form -->
                                     	<div class="row">
-                                            <div class="col-md-5 mb-3">
+                                            <div class="col-md-5">
                                                 <div class="form-group">
                                                      <label for="mZipcode">우편번호</label>
-                                                     <div class="input-group mb-4">
+                                                     <div class="input-group">
 			                                            <div class="input-group-prepend">
 			                                                <span class="input-group-text"><i class="fas fa-compass"></i></span>
 			                                            </div>
@@ -354,10 +293,10 @@ var InputImage =
                                             		</div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-7 mb-3">
+                                            <div class="col-md-7">
                                                 <div class="form-group">
                                                      <label for="mAddress">주소</label>
-                                                     <div class="input-group mb-4">
+                                                     <div class="input-group">
 			                                            <div class="input-group-prepend">
 			                                                <span class="input-group-text"><i class="far fa-compass"></i></span>
 			                                            </div>
@@ -369,14 +308,14 @@ var InputImage =
                                     <!-- End of Form -->
                                     <!-- Form -->
                                     <label for="mAddressDetail">상세주소</label>
-                                   	<div class="input-group mb-4">
+                                   	<div class="input-group">
                                 		<div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-compass"></i></span>
                                         </div>
                                        	<input name ="mAddressDetail" class="form-control" id="addressDetail"  placeholder="상세주소를 입력하세요. ex)대원빌 101호" type="text">
                                     </div>
                                     <!-- End of Form -->
-                                    <!-- Form -->
+                                    <!-- Form
 	                              	<div class="row">
 		                                <div class="col-md-6 mb-3">
 			                                <div class="form-group">
@@ -407,7 +346,7 @@ var InputImage =
 		                            </div>
                                     <!-- End of Form -->
                                    
-                                    <!-- Form -->
+                                    <!-- Form 
                                     <div id="accInput" class="row" style="display: none">
                                             <div class="col-md-5 mb-3">
                                                 <div class="form-group">
@@ -444,7 +383,7 @@ var InputImage =
                                             </div>
                                         </div>
                                     <!-- End of Form -->
-                                    <!-- Form -->
+                                    <!-- Form 
                                     <div id="cardInput" class="row" style="display: none">
                                             <div class="col-md-4 mb-3">
                                                 <div class="form-group">
@@ -486,7 +425,7 @@ var InputImage =
                                             </div>
                                         </div>
                                     <!-- End of Form --> 
-                                    <!-- Form -->
+                                    <!-- Form 
                                     	<div id="cvc" class="row" style="display: none">
                                             <div class="col-md-7 mb-3">
                                                 <div class="form-group">
@@ -509,7 +448,7 @@ var InputImage =
                                             </div>
                                         </div>
                                     <!-- End of Form -->
-                                     <!-- Form -->
+                                     <!-- Form 
                                     <label for="cPwd">결제비밀번호 설정</label>
                                    	<div class="input-group mb-4">
                                 		<div class="input-group-prepend">
@@ -523,7 +462,7 @@ var InputImage =
                                         <label class="form-check-label" for="terms">
                                             <span class="small"><a class="text-secondary" href="#" id="terms2">약관</a>에 동의합니다. </span> 
                                         </label>
-                                        <span class="small" style="float: right;"><a class="text-secondary" href="<c:url value='/main'/> " >메인 홈페이지로 이동하기</a></span>
+                                        <span class="small" style="float: right;"><a class="text-secondary" href="<c:url value='/index'/> " >메인 홈페이지로 이동하기</a></span>
                                     </div>
                                 <button type="submit" class="btn btn-block btn-primary">부가정보입력 완료하기</button>
                             </form>

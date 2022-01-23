@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gr.ssgb.blackList.model.BlackListDAO">
+
+	<select id="selectBlackListAll" parameterType="blackListvo"
+		resultType="map">
+		select *
+		from
+		(
+		select rownum as RNUM, A.*
+		from
+		(
+		select * from blacklistview
+		where hno=#{hno}
+		order by bno desc
+		)A
+		)
+		<![CDATA[where RNUM>#{firstRecordIndex} and 
+		RNUM<=#{firstRecordIndex}+ #{recordCountPerPage}
+		]]>
+	</select>
+	
+	<select id="selectTotalRecord" parameterType="blackListvo"	resultType="int">
+		select count(*) from blackListview
+		where hno=#{hno}
+	</select>
+
+
+	<insert id="insertBlackList" parameterType="blackListVo">
+		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+			select
+			BLACKLIST_SEQ.NEXTVAL from dual
+		</selectKey>
+		insert into blacklist(bNo,m_no,hNo)
+		values(#{bno},#{mNo},#{hno})
+	</insert>
+	<update id="insertBlackListB" parameterType="blackListVo">
+		UPDATE MEMBER
+		SET
+		M_BLACKLIST_FLAG = 'Y'
+		WHERE M_NO= #{mNo}
+	</update>
+
+	<delete id="deleteBlackList" parameterType="int">
+		delete
+		blackList
+		where
+		bno=#{bno}
+	</delete>
+	
+	<update id="deleteBlackListF" parameterType="String">
+		UPDATE MEMBER
+		SET M_BLACKLIST_FLAG = 'N'
+		where m_id=#{mId}
+	</update>
+	
+	<select id="selectClassUserbyId" parameterType="ClassUserVO" resultType="ClassUserVO">
+		select rownum, A.* from
+		(
+		select * from classuserview
+		where m_id=#{mId} and c_no=#{cNo}
+		)A
+		where rownum=1
+	</select>
+	
+	<select id="checkBlackList" parameterType="ClassUserVO" resultType="String">
+		select A.m_id
+		from(
+			select m_id from classuserview
+			where c_no=#{cNo} and m_blacklist_flag='Y' and m_id=#{mId}
+		)A
+		where rownum=1
+	</select>
+</mapper>

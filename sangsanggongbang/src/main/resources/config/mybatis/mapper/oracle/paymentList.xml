@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gr.ssgb.paymentList.model.PaymentListDAO">
+
+	<select id="selectPaymentListAll" parameterType="paymentSearchVo" resultType="Map">
+		select *
+		from
+		(
+		    select rownum as RNUM, A.*
+		    from
+		    (
+		        select * from payview
+				where refund='payed' and m_id = #{mId}
+				order by pay_date desc		        
+		    )A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+			and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="selectTotalPayment" parameterType="string" resultType="int">
+		select count(*) from payview where m_id = #{mId} and refund='payed'
+	</select>
+	
+	<select id="selectByNo" parameterType="paymentSearchVo" resultType="map">
+		select * from payview where m_id = #{mId} and merchant_uid = #{merchantUid}
+	</select>
+	
+	<update id="deletePayment" parameterType="orderVo">
+		update orders
+		set refund='refund', reason=#{reason} where merchant_uid= #{merchantUid}
+	</update>
+
+	<select id="selectRefundByNo" parameterType="paymentSearchVo" resultType="Map">
+		select *
+		from
+		(
+		    select rownum as RNUM, A.*
+		    from
+		    (
+		        select * from payview
+				where refund='refund' and m_id = #{mId}
+				order by pay_date desc		        
+		    )A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+			and RNUM<=#{firstRecordIndex} + #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="selectTotalRefund" parameterType="string" resultType="int">
+		select count(*) from payview where m_id = #{mId} and refund='refund'
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+

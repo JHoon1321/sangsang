@@ -1,5 +1,7 @@
 package com.gr.ssgb.hostclass.model;
 
+import org.springframework.util.StringUtils;
+
 public class LocationVO {
 	//classLocation--------------------
 //	L_NO NUMBER NOT NULL, /* 장소번호 */
@@ -15,7 +17,23 @@ public class LocationVO {
 	private String lAddress;
 	private String lAddressDetail;
 	private int hNo;
-	
+	private String loc; //두글자만 꺼내오는변수
+
+	private String[] lAddressArr;
+
+	public String[] getlAddressArr() {
+		if(!StringUtils.isEmpty(this.lAddress)) {
+			return this.lAddress.split(" ");
+		}
+		return null;
+	}
+
+	public String getLoc() {
+		return loc;
+	}
+	public void setLoc(String loc) {
+		this.loc = loc;
+	}
 	public int gethNo() {
 		return hNo;
 	}

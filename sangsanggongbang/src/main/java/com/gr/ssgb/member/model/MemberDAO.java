@@ -1,5 +1,7 @@
 package com.gr.ssgb.member.model;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
@@ -10,12 +12,23 @@ public interface MemberDAO {
 	int updateAdditionalInfo(MemberVO vo);
 	int updateAdditionalSns(MemberVO vo);
 	int selectMemberCnt(String mId);
-	int selectMno(String getmId);
+	Integer selectMno(String getmId);
 	int insertPayment(PaymentVO paymentVo);
 	MemberVO selectMemberById(String mId);
 	PaymentVO selectBasicPayment(int getmNo);
 	int updatePaymentInfo(PaymentVO payVo);
 	int updatePwd(MemberVO vo);
 	int findPaymentCnt(int getmNo);
+	int updateNickname(MemberVO memberVo);
+	int updateAddiWithoutProfile(MemberVO vo);
+
+	int updateMGrade(MemberVO vo);
+	
+	int deleteMember(int mNo);
+
+
+	int insertConcern(ConcernVO concernVo);
+	int deleteConcern(int cNo);
+	List<ConcernVO> selectConcern(int mNo);
 
 }

@@ -1,5 +1,6 @@
 package com.gr.ssgb.member.model;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class MemberServiceImpl implements MemberService{
 		return memberDao.selectMemberCnt(mId);
 	}
 	@Override
-	public int selectMno(String getmId) {
+	public Integer selectMno(String getmId) {
 		return memberDao.selectMno(getmId);
 	}
 	@Override
@@ -88,6 +89,36 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int findPaymentCnt(int getmNo) {
 		return memberDao.findPaymentCnt(getmNo);
+	}
+	@Override
+	public int updateNickname(MemberVO memberVo) {
+		return memberDao.updateNickname(memberVo);
+	}
+	@Override
+	public int updateAddiWithoutProfile(MemberVO vo) {
+		return memberDao.updateAddiWithoutProfile(vo);
+
+	}
+	@Override
+	public int updateMGrade(MemberVO vo) {
+		return memberDao.updateMGrade(vo);
+	}
+	@Override
+	public int insertConcern(ConcernVO concernVo) {
+		return memberDao.insertConcern(concernVo);
+	}
+	@Override
+	public int deleteConcern(int cNo) {
+		return memberDao.deleteConcern(cNo);
+	}
+	@Override
+	public List<ConcernVO> selectConcern(int mNo) {
+		return memberDao.selectConcern(mNo);
+
+	}
+	@Override
+	public int deleteMember(int mNo) {
+		return memberDao.deleteMember(mNo);
 	}
 	
 }

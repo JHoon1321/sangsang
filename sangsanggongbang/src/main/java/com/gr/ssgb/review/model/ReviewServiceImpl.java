@@ -30,6 +30,37 @@ public class ReviewServiceImpl implements ReviewService{
 	public int selectTotalRecord(SearchVO searchVo) {
 		return reviewDao.selectTotalRecord(searchVo);
 	}
+
+	@Override
+	public Integer selectRate(int cNo) {
+		return reviewDao.selectRate(cNo);
+	}
+
+	@Override
+	public List<ReviewVO> selectAllRate() {
+		return reviewDao.selectAllRate();
+	}
+
+	@Override
+	public List<ReviewVO> AllRate() {
+		List<ReviewVO> list = reviewDao.AllRate();
+		int sum=0;
+		int avg=0;
+		for(int i=0;i<list.size();i++) {
+			for(int j=1;j<list.size();j++) {
+				if(list.get(i).getcNo()==list.get(j).getcNo()) {
+					sum+=list.get(j).getrRate();
+				}
+				
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public int selectReviewByHost(int hNo) {
+		return reviewDao.selectReviewByHost(hNo);
+	}
 	
 	
 }

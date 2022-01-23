@@ -1,5 +1,9 @@
 package com.gr.ssgb.host.model;
 
+import java.util.List;
+
+import com.gr.ssgb.admin.model.MonthVO;
+
 public interface HostService {
 	public static final int LOGIN_OK=1;
 	public static final int ID_NONE=2;
@@ -17,4 +21,25 @@ public interface HostService {
 
 	int insertHost(HostVO vo);
 
+	List<HostVO> selectAllHost();
+
+	int selectHostNo(String hId);
+
+	int updateAdditionalInfo(HostVO vo);
+
+	int updateAddiWithoutProfile(HostVO vo);
+
+	HostVO selectHostByHNo(int hNo);
+
+	int findClassCnt(MonthVO monVo);
+
+	Integer selectMyProfit(MonthVO monVo);
+
+	int updateHGrade(HostVO vo);
+
+	Integer selectUndoneClass(int hNo);
+
+	int deleteHost(int hNo);
+
+	int updatePwd(HostVO vo);
 }

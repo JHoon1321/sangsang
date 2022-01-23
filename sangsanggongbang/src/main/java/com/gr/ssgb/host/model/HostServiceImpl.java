@@ -1,7 +1,11 @@
 package com.gr.ssgb.host.model;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.gr.ssgb.admin.model.MonthVO;
 
 @Service
 public class HostServiceImpl implements HostService{
@@ -43,5 +47,70 @@ public class HostServiceImpl implements HostService{
 	public int insertHost(HostVO vo) {
 		return hostDao.insertHost(vo);
 	}
+
+	@Override
+	public List<HostVO> selectAllHost() {
+		return hostDao.selectAllHost();
+	}
+
+	@Override
+	public int selectHostNo(String hId) {
+		return hostDao.selectHostNo(hId);
+	}
+
+	@Override
+	public int updateAdditionalInfo(HostVO vo) {
+		return hostDao.updateAdditionalInfo(vo);
+	}
+
+	@Override
+	public int updateAddiWithoutProfile(HostVO vo) {
+		return hostDao.updateAddiWithoutProfile(vo);
+	}
+
+	@Override
+	public HostVO selectHostByHNo(int hNo) {
+		return hostDao.selectHostByHNo(hNo);
+	}
+
+	@Override
+	public int findClassCnt(MonthVO monVo) {
+		return hostDao.findClassCnt(monVo);
+	}
+
+	@Override
+	public Integer selectMyProfit(MonthVO monVo) {
+		return hostDao.selectMyProfit(monVo);
+	}
+
+	@Override
+	public int updateHGrade(HostVO vo) {
+		return hostDao.updateHGrade(vo);
+	}
+
+	@Override
+	public Integer selectUndoneClass(int hNo) {
+		return hostDao.selectUndoneClass(hNo);
+	}
+
+	@Override
+	public int deleteHost(int hNo) {
+		int cnt1 = hostDao.updateHostDel(hNo);
+		if(cnt1==1) {
+			int cnt2 = hostDao.deleteBanList(hNo);
+			if(cnt2==1) {
+				int cnt3 = hostDao.deleteBlackList(hNo);
+			}
+		}
+		
+		return cnt1; 
+	}
+
+	@Override
+	public int updatePwd(HostVO vo) {
+		return hostDao.updatePwd(vo);
+	}
+	
+	
 	
 }

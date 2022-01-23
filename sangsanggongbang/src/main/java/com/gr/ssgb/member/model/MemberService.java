@@ -1,5 +1,7 @@
 package com.gr.ssgb.member.model;
 
+import java.util.List;
+
 public interface MemberService {
 	public static final int LOGIN_OK=1;
 	public static final int ID_NONE=2;
@@ -21,7 +23,7 @@ public interface MemberService {
 
 	int insertSnsMember(MemberVO memberVo);
 
-	int selectMno(String getmId);
+	Integer selectMno(String getmId);
 
 	int insertPayment(PaymentVO paymentVo);
 
@@ -34,6 +36,18 @@ public interface MemberService {
 	int updatePwd(MemberVO vo);
 
 	int findPaymentCnt(int getmNo);
+  
+	int updateNickname(MemberVO memberVo);
 
+	int updateAddiWithoutProfile(MemberVO vo);
+
+
+	int updateMGrade(MemberVO vo);
+
+	int deleteMember(int mNo);
+
+	int insertConcern(ConcernVO concernVo);
+	int deleteConcern(int cNo);
+	List<ConcernVO> selectConcern(int mNo);
 
 }

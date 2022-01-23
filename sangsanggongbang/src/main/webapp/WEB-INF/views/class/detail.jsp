@@ -3,7 +3,29 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ include file="../inc/top.jsp"  %>
+<style>
+.fa-heart:hover {
+    cursor: pointer;
+}
+
+.fas.fa-heart {
+    color:red;
+}
+</style>
+<c:choose>
+    <c:when test="${!empty sessionScope.hId }">
+        <%@ include file="../inc/new_top_host.jsp"%>
+    </c:when>
+    <c:when test="${!empty sessionScope.mId }">
+        <%@ include file="../inc/new_top_user.jsp"%>
+    </c:when>
+    <c:when test="${!empty sessionScope.adId }">
+        <%@ include file="../inc/new_top_admin.jsp"%>
+    </c:when>
+    <c:otherwise>
+        <%@ include file="../inc/new_top_user.jsp"%>
+    </c:otherwise>
+</c:choose>
 
 <!-- 결제모듈 -->
 
@@ -11,32 +33,68 @@
 
 		<!-- Hero -->
 		<div
-			class="section section-header section-image bg-primary overlay-primary  overflow-hidden pb-6" style="color:#46746e;" >
+			class="section section-header section-image bg-primary overlay-primary  overflow-hidden pb-6" style="color:#49746E;" >
 			<div class="container z-2" >
-				<div class="row justify-content-center pt-3">
-					<div class="col-12 text-center">
-						<nav aria-label="breadcrumb">
-							<ol
-								class="breadcrumb breadcrumb-transparent justify-content-center mb-4">
-								<li class="breadcrumb-item text-secondary"><a
-									href="<c:url value='/index'/> " style="color:#46746e;">➯목록으로 돌아가기</a></li>
-							</ol>
-						</nav>
-						<h1 class="mb-4">${map["C_NAME"] }</h1>
-						<div class="d-block d-md-flex justify-content-center">
-							<span class="h6 font-weight-light"><span
-								class="fas fa-check-circle mr-1 pr-1"></span>
-								${map["CATEGORY_NAME"] }
-								</span> 
-								<span class="lh-120 ml-md-4">
-								<i class="fas fa-map-marker-alt mr-1 pr-1"></i>${ map['L_ADDRESS']}
-								${ map['L_ADDRESS_DETAIL']}<a data-fancybox
-								href="https://www.google.com/maps/place/New+York,+NY,+USA/@40.6971494,-74.2598683,10z/data=!3m1!4b1!4m5!3m4!1s0x89c24fa5d33f083b:0xc80b8f06e177fe62!8m2!3d40.7127753!4d-74.0059728"
-								class="ml-md-3">See Location</a> </span>
-						</div>
+			<div class="row justify-content-center pt-3">
+				<div class="col-12 text-center">
+					<nav aria-label="breadcrumb">
+						<ol
+							class="breadcrumb breadcrumb-transparent justify-content-center mb-4">
+							<li class="breadcrumb-item text-secondary"><a
+								href="<c:url value='/index'/> " style="color: #46746e;">➯메인으로 돌아가기</a></li>
+						</ol>
+					</nav>
+					<h1 class="mb-4">${map["C_NAME"] }</h1>
+					<div class="d-block d-md-flex justify-content-center">
+						<span class="h6 font-weight-light"><span
+							class="fas fa-check-circle mr-1 pr-1"></span>
+							${map["CATEGORY_NAME"] } </span>
+							<input type="hidden" value="${map['CATEGORY_NAME'] }" id="category">
+							 <span class="lh-120 ml-md-4"> <i
+							class="fas fa-map-marker-alt mr-1 pr-1"></i>${ map['L_ADDRESS']}
+							${ map['L_ADDRESS_DETAIL']}
+						</span>
+					</div>
+					<div class="d-block d-md-flex justify-content-center">
+						<span class="d-flex justify-content-center"><c:if
+								test="${avgRate eq 5}">
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+							</c:if> <c:if test="${avgRate eq 4}">
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star far text-gray mr-2"></i>
+							</c:if> <c:if test="${avgRate eq 3}">
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star far text-gray mr-2 "></i>
+								<i class="star fa-star far text-gray mr-2"></i>
+							</c:if> <c:if test="${avgRate eq 2}">
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star far text-gray mr-2 "></i>
+								<i class="star fa-star far text-gray mr-2"></i>
+								<i class="star fa-star far text-gray mr-2"></i>
+							</c:if> <c:if test="${avgRate eq 1}">
+								<i class="star fa-star fas text-warning mr-2"></i>
+								<i class="star fa-star far text-gray mr-2 "></i>
+								<i class="star fa-star far text-gray mr-2 "></i>
+								<i class="star fa-star far text-gray mr-2 "></i>
+								<i class="star fa-star far text-gray mr-2"></i>
+							</c:if> <c:if test="${avgRate eq null}">
+								아직 리뷰가 없습니다.
+							</c:if>
+						</span>
 					</div>
 				</div>
 			</div>
+		</div>
 		</div>
 		<div class="section section-lg pt-5">
 			<div class="container">
@@ -50,14 +108,19 @@
 								<a class="nav-item nav-link active" id="nav-about-tab"
 									data-toggle="tab" href="#nav-about" role="tab"
 									aria-controls="nav-about" aria-selected="true"><span
-									class="far fa-address-card mr-2"></span>클래스 미리보기</a> <a
+									class="far fa-handshake mr-2"></span>클래스 미리보기</a> <a
 									class="nav-item nav-link" id="nav-video-tab" data-toggle="tab"
 									href="#nav-video" role="tab" aria-controls="nav-video"
-									aria-selected="false"><span class="far fa-play-circle mr-2"></span>클래스 설명</a>
+									aria-selected="false"><span class="fas fa-pen mr-2"></span>클래스 설명</a>
 								<a class="nav-item nav-link" id="nav-reviews-tab"
 									data-toggle="tab" href="#nav-reviews" role="tab"
 									aria-controls="nav-reviews" aria-selected="false"><span
-									class="far fa-star mr-2"></span>리뷰</a> <a
+									class="far fa-star mr-2"></span>리뷰</a> 
+								<a class="nav-item nav-link" id="nav-qna-tab"
+									data-toggle="tab" href="#nav-qna" role="tab"
+									aria-controls="nav-qna" aria-selected="false"><span
+									class="far fa-question-circle mr-2"></span>Q&A</a> 
+									<a
 									class="nav-item nav-link" id="nav-location-tab"
 									data-toggle="tab" href="#nav-location" role="tab"
 									aria-controls="nav-location" aria-selected="false"><span
@@ -65,50 +128,59 @@
 							</div>
 						</nav>
 						<!-- About Tab -->
-						<div class="tab-content mt-5 mb-3" id="nav-tabContent">
+						<div class="tab-content mt-5 mb-3" id="nav-tabContent" >
 							<div class="tab-pane fade show active" id="nav-about"
 								role="tabpanel" aria-labelledby="nav-about-tab">
+								<div class="container">
 								<div class="row mb-5">
 									<div class="col-12">
 										<div class="fancy-gallery mb-5">
 											<div class="row">
 												<div id="Carousel2" class="carousel slide" data-ride="carousel">
-												    <div class="carousel-inner">
+												    <div class="carousel-inner" >
 												        <div class="carousel-item active">
-												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["THUMBNAIL"] }'/>" alt="First slide">
+												        <c:choose >
+					                                    	<c:when test="${not empty map['THUMBNAIL']}">
+					                                        	<img src="<c:url value='/resources/upload_images/${map["THUMBNAIL"] }'/> " height="621px" width="745px" alt="썸네일">
+					                                    	</c:when>
+					                                    	<c:when test="${map['THUMBNAIL'] eq null}">
+					                                    		<h3>미리보기 이미지가 없습니다.</h3>
+					                                        	<img src="<c:url value='/resources/upload_images/basic.png'/> " height="621px" width="745px"  alt="기본이미지">
+					                                    	</c:when>
+					                                    </c:choose>
 												        </div>
 												        <c:choose >
 												        <c:when test="${not empty map['CONTENTS_FILENAME1']}">
 												        <div class="carousel-item">
-												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME1"] }'/> " alt="Second slide">
+												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME1"] }'/> "height="621px" width="745px"  alt="Second slide">
 												        </div>
 												        </c:when>
 												        </c:choose>
 												        <c:choose >
 												        <c:when test="${not empty map['CONTENTS_FILENAME2']}">
 												        <div class="carousel-item">
-												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME2"] }'/> " alt="Third slide">
+												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME2"] }'/> "height="621px" width="745px"   alt="Third slide">
 												        </div>
 												        </c:when>
 												        </c:choose>
 												        <c:choose >
 												        <c:when test="${not empty map['CONTENTS_FILENAME3']}">
 												        <div class="carousel-item">
-												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME3"] }'/> " alt="Third slide">
+												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME3"] }'/> " height="621px" width="745px" alt="Third slide">
 												        </div>
 												        </c:when>
 												        </c:choose>
 												        <c:choose >
 												        <c:when test="${not empty map['CONTENTS_FILENAME4']}">
 												        <div class="carousel-item">
-												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME4"] }'/> " alt="Third slide">
+												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME4"] }'/> " height="621px" width="745px" alt="Third slide">
 												        </div>
 												        </c:when>
 												        </c:choose>
 												        <c:choose >
 												        <c:when test="${not empty map['CONTENTS_FILENAME5']}">
 												        <div class="carousel-item">
-												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME5"] }'/> " alt="Third slide">
+												            <img class="d-block w-100" src="<c:url value='/resources/upload_images/${map["CONTENTS_FILENAME5"] }'/> " height="621px" width="745px" alt="Third slide">
 												        </div>
 												        </c:when>
 												        </c:choose>
@@ -126,7 +198,8 @@
 										</div>
 									</div>
 								</div>
-								<div class="row">
+								</div>
+								<div class="row" >
 									<div class="col">
 										<div class="card card-body bg-soft border-light p-2">
 											<div class="card-group bg-soft">
@@ -137,7 +210,7 @@
 														</div>
 														<!-- Heading -->
 														<div class="h5 mt-3 mb-0">
-														<fmt:formatDate value="${map['C_REGDATE'] }"  pattern="yyyy-MM-dd" />
+														<fmt:formatDate value="${map['C_START_TIME'] }"  pattern="yyyy-MM-dd" />
 														</div>
 														<!-- Text -->
 														<span class="text-muted h6 font-weight-normal mb-0">
@@ -147,7 +220,7 @@
 												<div class="card mb-0 border-left">
 													<div class="card-body text-center px-0 px-md-3">
 														<div class="icon icon-secondary">
-															<span class="fas fa-ruler-combined"></span>
+															<span class="far fa-clock"></span>
 														</div>
 														<!-- Heading -->
 														<div class="h5 mt-3 mb-0">${map["C_TIME"] } 시</div>
@@ -162,7 +235,7 @@
 															<span class="fas fa-users"></span>
 														</div>
 														<!-- Heading -->
-														<div class="h5 mt-3 mb-0">${map["PPNUM"] } 명</div>
+														<div class="h5 mt-3 mb-0">${map["FPNUM"] }/${map["PPNUM"] } 명</div>
 														<!-- Text -->
 														<span class="text-muted h6 font-weight-normal mb-0">
 															Person </span>
@@ -171,7 +244,7 @@
 												<div class="card mb-0 border-left">
 													<div class="card-body text-center px-0 px-md-3">
 														<div class="icon icon-secondary">
-															<span class="fas fa-couch"></span>
+															<span class="fas fa-won-sign"></span>
 														</div>
 														<!-- Heading -->
 														<div class="h5 mt-3 mb-0">
@@ -188,7 +261,7 @@
 								</div>
 							</div>
 							<!-- End of About Tab -->
-							<!-- Video Tab -->
+							<!-- content Tab -->
 							<div class="tab-pane fade" id="nav-video" role="tabpanel"
 								aria-labelledby="nav-video-tab">
 								<div class=" position-relative rounded">
@@ -198,28 +271,47 @@
 											<div class="row">
 											</div>
 										</div>
-										<textarea class="form-control"id="exampleFormControlTextarea2" rows="20">
-											${map["CONTENTS_CONTENT"] }
+										<textarea class="form-control"id="exampleFormControlTextarea2" rows="20" readonly="readonly">${map["CONTENTS_CONTENT"] }
 										</textarea>
 									</div>
 								</div>
 								</div>
 							</div>
-							<!-- End of Video Tab -->
+							<!-- End of content Tab -->
 							<!-- Reviews Tab -->
 							<div class="tab-pane fade" id="nav-reviews" role="tabpanel"
 								aria-labelledby="nav-reviews-tab">
-								<c:import url="/class/review"/>
-								<c:import url="/class/addreview?cNo=${map['C_NO'] }"/>
+								<c:if test="${mId == null }">
+								<c:import url="/class/review?cNo=${map['C_NO'] }"/>
+								<div id="reviewlist"></div>
+								<div class="form-control border"><i class="fas fa-lock"></i>&nbsp;리뷰를 작성하려면 로그인 해주세요!</div>
+								</c:if> 
 								
+								<c:if test="${mId!=null }">
+								<div id="reviewlist"></div>
+								<%-- <c:import url="/class/review?cNo=${map['C_NO'] }"/> --%>
+								<c:import url="/class/addreview?cNo=${map['C_NO'] }"/>
+								</c:if>
 							</div>
 							<!-- End of Reviews Tab -->
+							<!-- Q&A Tab -->
+
+							<div class="tab-pane fade" id="nav-qna" role="tabpanel" aria-labelledby="nav-qna-tab">
+								<div class="row">
+									<div class="col-12">
+										<c:import url="/qa/list?cNo=${map['C_NO']}"/>
+									</div>
+								</div>
+							</div>
+
+							<!-- End of Q&A Tab -->
+							
+							<!-- 지도 -->
 							<div class="tab-pane fade" id="nav-location" role="tabpanel"
 								aria-labelledby="nav-location-tab">
 								<div class="row">
 									<div class="col-12">
-										<iframe class="map rounded" id="gmap_canvas"
-											src="https://maps.google.com/maps?q=san%20francisco&t=&z=8&ie=UTF8&iwloc=&output=embed"></iframe>
+										<iframe id="map" style="width:700px;height:400px;" src="<c:url value='/class/classMap?cNo=${map["C_NO"]}'/>"></iframe>
 									</div>
 								</div>
 							</div>
@@ -229,24 +321,30 @@
 					</div>
 					<aside class="col-12 col-lg-4 mt-3 mt-lg-0">
 						<div class="card border-light mt-4 p-3">
-							<h5 class="font-weight-normal">Property Owner</h5>
+							<h5 class="font-weight-normal">늘솜 정보</h5>
 							<div class="media d-flex align-items-center my-3">
-								<a href="./profile.html" class="avatar-lg mr-2"
-									data-toggle="tooltip" data-placement="top" title="More details">
-									<img class="img-fluid rounded-circle"
-									src="${pageContext.request.contextPath}/resources/assets/img/team/profile-picture-1.jpg"
-									alt="avatar">
-								</a>
+								<!-- <a href="./profile.html" class="avatar-lg mr-2"
+									data-toggle="tooltip" data-placement="top" title="More details"> -->
+									<img class="img-fluid rounded-circle avatar-lg mr-4"
+									<c:if test="${empty hostVo.hFilename}">
+									src="${pageContext.request.contextPath}/resources/assets/img/default.png"
+									</c:if>
+									<c:if test="${!empty hostVo.hFilename}">
+									src="${pageContext.request.contextPath}/resources/file_upload/${hostVo.hFilename}"
+									</c:if>
+									alt="프로필사진">
+								<!-- </a> -->
 								<div class="avatar-name">
-									<a class="text-gray" href="./profile.html"
-										data-toggle="tooltip" data-placement="top"
-										title="More details">Jose Leos</a>
+									<span style="color:#82AFC5">${hostVo.hNickname}</span><br>
+									
 								</div>
 							</div>
+							<div class="mb-3">
+								개설한 클래스 | ${classCnt}개&nbsp;&nbsp; 리뷰 | ${reviewCnt}개
+							</div>
 							<!-- Button Modal -->
-							<button type="button" class="btn btn-block btn-secondary mb-3"
-								data-toggle="modal" data-target="#modal-form">Contact
-								Host</button>
+							
+							<button type="button" id ="openChat" class="btn btn-block btn-secondary mb-3">늘솜에게 실시간 문의하기</button>
 							<!-- Modal Content -->
 							<div class="modal fade" id="modal-form" tabindex="-1"
 								role="dialog" aria-labelledby="modal-form" aria-hidden="true">
@@ -300,110 +398,79 @@
 							</div>
 							<!-- End of Modal Content -->
 						</div>
-					</c:forEach>
+						<br>
+						<form action="order" method="post" class="card border-light p-3 mb-4">
+						<input type="hidden" id="cNo" name="cNo" value="${map['C_NO'] }">
+						<c:if test="${!empty mId }">
 						<div class="card border-light mt-4 p-3">
-							<label for="exampleFormControlSelect1">클래스 신청일 선택</label>
+						<input type="hidden" id="con" value="${con }">
+						<c:if test="${con == 0 }">
+						 <i class="far fa-heart" id="heart">&nbsp;
+						 </c:if>
+						<c:if test="${con > 0}">
+						 <i class="fas fa-heart" id="heart">&nbsp;
+						 </c:if>
+						 <label for="exampleFormControlSelect2">관심클래스로 등록하기 </label></i>
+						 </div>
+						 </c:if>
+						<div class="card border-light mt-4 p-3">
+							<label for="exampleFormControlSelect1">클래스 신청일</label>
+							<br> 
 							<div class="form-group">
 								<div class="input-group input-group-border">
-									<div class="input-group-prepend">
-										<span class="input-group-text"><i
-											class="far fa-calendar-alt"></i></span>
+										<span class="input-group-text">
+											<i class="far fa-calendar-alt"></i>
+										</span>
+									<div class="text-center"><label for="exampleFormControlSelect1">&nbsp;
+									<fmt:formatDate value="${map['C_START_TIME'] }"  pattern="yyyy-MM-dd" /></label>
 									</div>
-									<input class="form-control datepicker"
-										placeholder="Select date" type="text" value="06/20/2018">
 								</div>
+								<div class="input-group input-group-border">
+										<span class="input-group-text">
+											<i class="far fa-clock"></i>
+										</span>
+									<div class="text-center"><label for="exampleFormControlSelect1">&nbsp;
+									${map["C_TIME"] } 시</label></div>
+								</div> 
+							<div class="input-group input-group-border" id="price">
+										<span class="input-group-text">
+											<i class="fas fa-coins"></i>
+										</span>
+										<label for="exampleFormControlSelect2">&nbsp;&nbsp;${map["C_PRICE"] }</label></div>
 							</div>
-							<br> <label for="exampleFormControlSelect2">인원수 선택</label>
-
-							<div class="class-confirm03">
-								<div class="c03-count">
-									<a href="#" id="num-sub">-</a> <input type="text" id="quantity"
-										value="1" class="only-number" /> <a href="#" id="num-add">+</a>
-								</div>
-							</div>
-							<input type="hidden" id="classRealPrice" value='40000'>
-							<!-- js에서 클래스정보 불러오고 id값으로 처리해야함. -->
-							<div class="c03-charge" id="price">40000</div>
+							 
 							<div class="text-center">
-								<button type="submit" class="btn btn-block btn-primary mt-4"
-									id="apibtn">결제하기</button>
+							
+								<button type="submit"  
+								<c:if test="${map['END_FLAG']=='Y' }">
+									disabled="disabled" class="btn btn-block btn-light mt-4"</c:if>
+								<c:if test="${map['END_FLAG']=='N' }">
+									class="btn btn-block btn-primary mt-4"
+								</c:if>
+								>
+								<c:if test="${map['END_FLAG']=='Y' }">
+									마감된 클래스입니다.
+								</c:if>
+								<c:if test="${map['END_FLAG']=='N' }">
+									결제하기
+								</c:if>
+								</button>
 							</div>
 						</div>
+						</form>
 					</aside>
 				</div>
 			</div>
 		</div>
-
+</c:forEach>
 		<section class="section bg-soft">
-       <c:forEach var="map" items="${catelist}">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<h4 class="mb-5 font-weight-bold"><span>${map["CATEGORY_NAME"] }</span> 클래스 전체보기</h4>
-						
-					</div>
-                    <div class="col-md-12">
-                        <div class="basic-carousel owl-carousel owl-theme">
-                            <!-- Item 1 -->
-                            
-                            <div class="item" >
-                                <!-- Card -->
-                                <div class="card border-light mb-4 animate-up-5" >
-                                    <a href="<c:url value='/class/detail?cNo=${map["C_NO"]}&categoryName=${map["CATEGORY_NAME"] } '/>" class="position-relative">
-                                    <c:choose >
-                                    	<c:when test="${not empty map['THUMBNAIL']}">
-                                        	<img src="<c:url value='/resources/upload_images/${map["THUMBNAIL"] }'/> " width="auto" height="200px" align="top" class="card-img-top p-2 rounded-xl" alt="썸네일">
-                                    	</c:when>
-                                    	<c:when test="${map['THUMBNAIL'] eq null}">
-                                        	<img src="<c:url value='/resources/upload_images/basic.png'/> " width="auto" height="200px" align="top" class="card-img-top p-2 rounded-xl" alt="기본이미지">
-                                    	</c:when>
-                                    </c:choose>
-                                    </a>
-                                    <div class="card-body" style="width:300px; height:150px">
-                                        <a href="<c:url value='/class/detail?cNo=${map["C_NO"]} '/>">
-                                            <h4 class="h6" >${map["C_NAME"] }</h4>
-                                        </a>
-                                        <div class="d-flex my-4">
-                                            <span class="star fas fa-star text-warning"></span> 
-                                            <span class="star fas fa-star text-warning"></span> 
-                                            <span class="star fas fa-star text-warning"></span> 
-                                            <span class="star fas fa-star text-warning"></span> 
-                                            <span class="star fas fa-star text-warning"></span>
-                                            <span class="badge badge-pill badge-primary ml-2">5.0</span>
-                                        </div> 
-                                        
-                                    </div>
-                                    <div class="card-footer bg-soft border-top">
-                                        <div class="d-flex justify-content-between">
-                                            <div class="col pl-0">
-                                                <span class="text-muted font-small d-block mb-2">가격</span>
-                                                <span class="h5 text-dark font-weight-bold" style="font-size:1em">
-                                                <fmt:formatNumber value="${map['C_PRICE'] }" pattern="#,###" />원
-                                                </span>
-                                            </div>
-                                            <div class="col">
-                                                <span class="text-muted font-small d-block mb-2">인원</span>
-                                                <span class="h5 text-dark font-weight-bold">${map["PPNUM"] }명</span>
-                                            </div>
-                                            <div class="col pr-0">
-                                                <span class="text-muted font-small d-block mb-2">지역</span>
-                                                <span class="h5 text-dark font-weight-bold">
-                                                	<c:set var="addr" value="${ map['L_ADDRESS']}"/>
-                                                	${fn:substring(addr,0,2)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End of Card -->
-                            </div>
-                            
-                    </div>
-                </div>
-            </div>
-        </div>
-                         </c:forEach>
+			<div class="container" > 
+				<div class="row" id="categoryName">
+					<c:import url="/class/listbyCategory" />
+	            </div>
+	        </div>
    <!-- Core -->
+   
 <script src="<c:url value='/resources/vendor/jquery/dist/jquery.min.js'/> "></script>
 <script src="<c:url value='/resources/vendor/popper.js/dist/umd/popper.min.js'/> "></script>
 <script src="<c:url value='/resources/vendor/bootstrap/dist/js/bootstrap.min.js'/> "></script>
@@ -445,6 +512,115 @@
 <script src="<c:url value='/resources/assets/js/spaces.js'/> "></script>
 		</section>
 		<!-- End of section -->
-	</main>
+
+<!-- 카카오 맵 -->
+<script type="text/javascript"
+	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0610dd037b7ecb430d9b2d53aa551531&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+var flag= "${sessionScope.uOrh}"
+console.log(flag);
+var roomName = "${hostVo.hNickname}";
+var roomId = "${hostVo.hNickname}";
+var username = null;
+if(flag == 'u'){
+	username = "${sessionScope.mNickname}";
+}else{
+	username = "${sessionScope.hNickname}";
+}
+//하트 클릭시빨강, 비동기방식으로 저장/삭제
+
+	$(function() {
+		const heart = document.querySelector('.fa-heart');
+		let cNo = ${param.cNo};
+		let num = 0;
+		
+
+		heart.addEventListener('click', function() {
+			if ($('#heart').hasClass('far')) {
+				heart.classList.remove('far');
+				heart.classList.add('fas');
+
+				$.ajax({
+					type : "POST",
+					url : '<c:url value="/member/interest"/>',
+					data : "cNo=" + cNo,
+					success : function(res) {
+						alert("관심클래스로 등록하였습니다.");
+					},
+					error : function() {
+						alert("관심클래스로 등록할 수 없습니다.");
+						heart.classList.remove('fas');
+						heart.classList.add('far');
+					}
+
+				}); //ajax 
+
+				num++;
+			} else if ($('#heart').hasClass('fas')) { //num==1
+				heart.classList.remove('fas');
+				heart.classList.add('far');
+
+				$.ajax({
+					type : "POST",
+					url : '<c:url value="/member/interestdelete"/>',
+					data : "cNo=" + cNo,
+					success : function(res) {
+						alert("관심클래스를 삭제하였습니다.");
+					},
+					error : function() {
+						alert("관심클래스 삭제를할 수 없습니다.");
+						heart.classList.remove('far');
+						heart.classList.add('fas');
+					}
+
+				}); //ajax 
+
+				num--;
+
+			}
+		}); //하트클릭
+
+	$('#nav-reviews').ready(function(){
+		$('#reviewlist').load("<c:url value='/class/review?cNo="+cNo+"'/>");
+		});
+		
+		
+		
+	});
+
+	function relayout() {
+
+		// 지도를 표시하는 div 크기를 변경한 이후 지도가 정상적으로 표출되지 않을 수도 있습니다
+		// 크기를 변경한 이후에는 반드시  map.relayout 함수를 호출해야 합니다 
+		// window의 resize 이벤트에 의한 크기변경은 map.relayout 함수가 자동으로 호출됩니다
+		map.relayout();
+	}
+	$(document).ready(function() {
+		let hash = location.hash.substring(1);
+		$('.nav-tabs' + hash).trigger('click');
 	
-<%@ include file="../inc/bottom.jsp" %>
+	    $('#openChat').click(function(){
+		    var contextPath="/sangsanggongbang";
+		    open(contextPath+'/chat/room?roomId=${hostVo.hNickname}','chat',
+		    'width=1000,height=840,left=0,top=0,location=yes,resizable=no');
+	    }); 
+	});
+
+</script>
+
+<c:choose>
+    <c:when test="${!empty sessionScope.hId }">
+        <%@ include file="../inc/bottom_host.jsp"%>
+    </c:when>
+    <c:when test="${!empty sessionScope.mId }">
+        <%@ include file="../inc/bottom.jsp"%>
+    </c:when>
+    <c:when test="${!empty sessionScope.adId }">
+        <%@ include file="../inc/bottom_admin.jsp"%>
+    </c:when>
+    <c:otherwise>
+        <%@ include file="../inc/bottom.jsp"%>
+    </c:otherwise>
+</c:choose>

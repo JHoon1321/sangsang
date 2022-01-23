@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -25,8 +26,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.gr.ssgb.balancing.model.BalancingService;
 import com.gr.ssgb.balancing.model.BalancingVO;
 import com.gr.ssgb.common.ConstUtil;
+import com.gr.ssgb.common.ExtendSearchVO;
 import com.gr.ssgb.common.PaginationInfo;
-import com.gr.ssgb.common.SearchVO;
+import com.gr.ssgb.host.model.HostService;
 
 @Controller
 @RequestMapping("/dashboard/host")
@@ -35,37 +37,48 @@ public class BalancingController {
 	=LoggerFactory.getLogger(BalancingController.class);
 
 	private final BalancingService balancingService;
+	private final HostService hostService;
 
 	//DI - 생성자에 의한 종속객체 주입
 	@Autowired
-	public BalancingController(BalancingService balancingService) {
+	public BalancingController(BalancingService balancingService, HostService hostService) {
 		this.balancingService = balancingService;
+		this.hostService = hostService;
 		logger.info("정산요청목록 생성자주입");
 	}
 
 	@RequestMapping("/balancing/list")
-	public String bcList(@ModelAttribute SearchVO searchVo, Model model,
-			@RequestParam(defaultValue = "0") int bNo) {
+	public String bcList(@ModelAttribute ExtendSearchVO extendSearchVo, Model model,
+			@RequestParam(defaultValue = "0") int bNo, HttpSession session) {
 		//1. 파라미터 읽어오기 - 출력
-		logger.info("정산목록 목록 페이지, 파라미터 searchVo={}", searchVo);
+		logger.info("정산목록 목록 페이지, 파라미터 extendSearchVo={}", extendSearchVo);
+		
+		//세션 hId나 hNo로 변경해서 받아야함.
+		String hostId =(String)session.getAttribute("hId");
+        int hNo = hostService.selectHostNo(hostId);
+        
+        
+		logger.info("호스트번호 session hNo={}", hNo);
 
 		//[1] PaginationInfo 객체 생성 - 계산해줌
 		PaginationInfo pagingInfo = new PaginationInfo();
 		pagingInfo.setBlockSize(ConstUtil.BLOCK_SIZE);
 		pagingInfo.setRecordCountPerPage(ConstUtil.RECORD_COUNT);
-		pagingInfo.setCurrentPage(searchVo.getCurrentPage());
+		pagingInfo.setCurrentPage(extendSearchVo.getCurrentPage());
 
-		//[2] searchVo에 값 셋팅
-		searchVo.setRecordCountPerPage(ConstUtil.RECORD_COUNT);
-		searchVo.setFirstRecordIndex(pagingInfo.getFirstRecordIndex());
-		logger.info("값 셋팅 후 searchVo={}", searchVo);
+		//[2] searchVo에 값 세팅
+		extendSearchVo.setRecordCountPerPage(ConstUtil.RECORD_COUNT);
+		extendSearchVo.setFirstRecordIndex(pagingInfo.getFirstRecordIndex());
+		extendSearchVo.sethId(hostId);
+		extendSearchVo.sethNo(hNo);
 
-		List<BalancingVO> list=balancingService.selectBalancingAll(searchVo);
+		logger.info("값 셋팅 후 extendSearchVo={}", extendSearchVo);
+
+		List<BalancingVO> list=balancingService.selectBalancingAll(extendSearchVo);
 		logger.info("정산목록 조회,결과 list.size={}", list.size());
-		logger.info("{}", list);
 
 		//[3] totalRecord 구하기
-		int totalRecord=balancingService.selectTotalRecord(searchVo);
+		int totalRecord=balancingService.selectTotalRecord(extendSearchVo);
 		pagingInfo.setTotalRecord(totalRecord);
 
 		//3. model에 결과 저장
@@ -77,7 +90,16 @@ public class BalancingController {
 	}
 	
 	@RequestMapping("/balancing")
-	public String totalprice(@ModelAttribute BalancingVO balancingVo, Model model) {
+	public String totalprice(@ModelAttribute BalancingVO balancingVo, Model model, HttpSession session) {
+		//로그인세션
+		String hostId =(String)session.getAttribute("hId");
+        int hNo = hostService.selectHostNo(hostId);
+        
+		logger.info("호스트번호 session hNo={}", hNo);
+		
+		//값할당
+		balancingVo.sethNo(hNo);
+		
 		//1. 파라미터 읽어오기 - 출력
 		List<BalancingVO> list=balancingService.totalPrice(balancingVo);
 		logger.info("정산총액 조회,결과 list.size={}", list.size());
@@ -100,7 +122,15 @@ public class BalancingController {
 	
 	@GetMapping("/excel/download")
     public void excelDownload(@ModelAttribute BalancingVO balancingVo, 
-    		HttpServletResponse response) throws IOException {
+    		HttpServletResponse response, HttpSession session) throws IOException {
+		//로그인세션
+		String hostId =(String)session.getAttribute("hId");
+        int hNo = hostService.selectHostNo(hostId);
+        
+		logger.info("호스트번호 session hNo={}", hNo);
+				
+		//값할당
+		balancingVo.sethNo(hNo);
 		
 		List<BalancingVO> list=balancingService.totalPrice(balancingVo);
 		logger.info("엑셀다운 리스트 결과={}", list.size());
@@ -152,17 +182,17 @@ public class BalancingController {
             cell = row.createCell(3);	//진행일자
             cell.setCellValue(simpleDateFormat.format(list.get(i).getbReqDate()));
             cell = row.createCell(4);	//참여인원
-            cell.setCellValue(list.get(i).getPpnum());
+            cell.setCellValue(list.get(i).getFpnum());
             cell = row.createCell(5);	//클래스단가
             cell.setCellValue(list.get(i).getcPrice());
             cell = row.createCell(6);	//매출액
-            cell.setCellValue(list.get(i).getcPrice()*list.get(i).getPpnum());
+            cell.setCellValue(list.get(i).getcPrice()*list.get(i).getFpnum());
             cell = row.createCell(7);	//수수료
-            cell.setCellValue(list.get(i).getcPrice()*list.get(i).getPpnum()*0.1);
+            cell.setCellValue(list.get(i).getcPrice()*list.get(i).getFpnum()*0.1);
             cell = row.createCell(8);	//정산금액
             cell.setCellValue(
-            		(list.get(i).getcPrice()*list.get(i).getPpnum())
-            		-(list.get(i).getcPrice()*list.get(i).getPpnum()*0.1));
+            		(list.get(i).getcPrice()*list.get(i).getFpnum())
+            		-(list.get(i).getcPrice()*list.get(i).getFpnum()*0.1));
             cell = row.createCell(9);	//정산유무
             cell.setCellValue(list.get(i).getbFlag());
         }
@@ -179,8 +209,6 @@ public class BalancingController {
         wb.write(response.getOutputStream());
         wb.close();
 
-
     }
-
 
 }

@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gr.ssgb.hostclass.model.HostClassDAO">
+	<select id="selectCategoryAll" resultType="categoryVo">
+	 	select * from category order by category_code
+	 </select>
+	
+	<insert id="insertClass" parameterType="hostClassVo">
+		<selectKey keyProperty="cNo" resultType="int" order="BEFORE">
+         select HOSTCLASS_SEQ.nextval from dual
+      </selectKey>
+		
+		insert into
+		HOSTCLASS(
+         C_NO
+         , C_NAME
+         , CATEGORY_CODE
+         , H_NO
+         , L_NO
+         , C_PRICE
+         , PPNUM
+         , C_START_TIME
+         , C_TIME
+         , END_FLAG
+         )
+		values( #{cNo}
+            , #{cName}
+            , #{CateCode}  
+            , #{hNo}
+            , #{lNo}
+             , #{cPrice}
+             , #{ppnum}
+             , #{cStart}
+             , #{cTime}
+             , #{endFlag}
+		)
+		
+	</insert>
+	
+	<insert id="insertContents" parameterType="contentsVo">
+		<selectKey keyProperty="contentsNo" resultType="int" order="BEFORE">
+         select C_CONTENTS_SEQ.nextval from dual
+      </selectKey>
+		
+		insert 
+		into C_Contents(
+           CONTENTS_NO
+           , C_NO
+           , THUMBNAIL
+           ,CONTENTS_FILENAME1 
+           ,CONTENTS_FILENAME2
+           ,CONTENTS_FILENAME3 
+           ,CONTENTS_FILENAME4 
+           ,CONTENTS_FILENAME5
+           ,CONTENTS_CONTENT
+           )
+        values(
+              #{contentsNo}
+              , #{cNo}
+              , #{thumbnail}
+              ,#{cFilename1}
+              ,#{cFilename2}
+              ,#{cFilename3}
+              ,#{cFilename4}
+              ,#{cFilename5}
+              ,#{content}
+           )
+		
+	</insert>
+
+	<insert id="insertLocation" parameterType="locationVo">
+		<selectKey keyProperty="lNo" resultType="int" order="BEFORE">
+         select LOCATION_SEQ.nextval from dual
+      </selectKey>
+		insert
+		 into Location(
+           L_NO
+           , ZIPCODE
+           , L_ADDRESS
+           , L_ADDRESS_DETAIL
+           , H_NO
+           )
+         values(
+            #{lNo}
+            , #{zipcode}
+            , #{lAddress}
+            , #{lAddressDetail}
+            ,#{hNo}
+            )
+		
+	</insert>
+
+	<select id="selectBylocation" parameterType="locationVo" resultType="locationVo">
+		select * from location 
+		where h_no=#{hNo} and l_address=#{lAddress} and l_address_detail=#{lAddressDetail}
+	</select>
+	<select id="selectByLNo" parameterType="locationVo" resultType="int">
+		select L_NO from location 
+		where l_address_detail=#{lAddressDetail} and l_address=#{lAddress} and h_no=#{hNo}
+	</select>
+	
+	<select id="selectByCNo" parameterType="hostclassVo" resultType="int">
+		select C_NO from hostclass where C_START_TIME=#{cStart} and C_TIME=#{cTime} and C_NAME=#{cName}
+	</select>
+	
+	<select id="selectClassAll" resultType="hostClassVo">
+		select * from hostclass order by c_end_time desc
+	</select>
+	
+	<select id="selectThumbnail" parameterType="int" resultType="string">
+		select thumbnail from c_contents where c_no=#{cNo}
+	</select>
+	
+	<select id="selectClassAllContents" resultType="map">
+		select * from selectClass order by c_start_time desc
+	</select>
+	
+	<select id="selectClassAllContents2" parameterType="searchVo" resultType="map">
+		select*
+		from
+		(
+		select rownum as RNUM, A.*
+		from
+		(
+		select * from ClassConcern where m_no = #{mNo} order by c_start_time desc
+		)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+			and RNUM<=#{firstRecordIndex}+ #{recordCountPerPage}]]>
+	</select>
+	
+	<select id="selectTotalRecord" parameterType="searchVo"
+		resultType="int">
+		select count(*) from ClassConcern
+	</select>
+	
+	<select id="selectClassLoc" parameterType="string" resultType="map">
+		select * from selectClass where loc=#{loc} order by c_start_time desc
+	</select>
+	
+	<select id="selectClassCategory" resultType="map" parameterType="string">
+		select * from selectClass where category_name=#{'categoryName'} order by c_start_time desc
+	</select>
+	
+	<select id="selectClassbyCNo" resultType="map" parameterType="int">
+		 select * from selectClass where c_no=#{cNo}
+	</select>
+	<select id="selectClassAllOfHost" resultType="map" parameterType="int">
+		select * from selectClass where h_no=#{hNo} order by c_start_time desc
+	</select>
+	<!-- 페이징처리위한것 -->
+	<select id="selectClassAllOfHost2" resultType="map" parameterType="searchVo">
+	select*
+		from
+		(
+		select rownum as RNUM, A.*
+		from
+		(
+		select * from selectClass where h_no=#{hNo} order by c_start_time desc
+		)A
+		)
+		<![CDATA[
+		where RNUM>#{firstRecordIndex} 
+			and RNUM<=#{firstRecordIndex}+ #{recordCountPerPage}]]>
+	</select>
+	<select id="selectTotalRecord2" parameterType="searchVo"
+		resultType="int">
+		select count(*) from selectClass where h_no=#{hNo} 
+	</select>
+
+	<update id="updateBylocation" parameterType="locationVo">
+		update location set 
+			zipcode= #{zipcode},l_address=#{lAddress}
+			,l_address_detail=#{lAddressDetail} where l_no=#{lNo}
+	</update>
+	<update id="updateByClass" parameterType="hostClassVo">
+		update hostclass set 
+			C_NAME= #{cName},CATEGORY_CODE=#{CateCode},
+			C_PRICE= #{cPrice}, PPNUM=#{ppnum},
+			C_START_TIME=#{cStart},C_TIME=#{cTime} where c_no=#{cNo}
+	</update>
+	<update id="updateByContents" parameterType="contentsVo">
+		update C_Contents set 
+			THUMBNAIL= #{thumbnail},CONTENTS_FILENAME1=#{cFilename1},
+			CONTENTS_FILENAME2= #{cFilename2}, CONTENTS_FILENAME3=#{cFilename3},
+			CONTENTS_FILENAME4=#{cFilename4},CONTENTS_FILENAME5=#{cFilename5},
+			CONTENTS_CONTENT=#{content} where c_no=#{cNo}
+			
+	</update>
+
+	<delete id="deleteClass" parameterType="int">
+		delete from hostclass where c_no=#{cNo}
+	</delete>
+
+	<delete id="deleteContents" parameterType="int">
+		delete from C_Contents where c_no=#{cNo}
+	</delete>
+	
+	<select id="selectAllHostClasses" resultType="hostclassVo">
+		select * from hostclass
+	</select>
+
+	
+	
+<!-- 	<resultMap  type="com.gr.ssgb.hostclass.model.ContentsVO" id="contents">
+		<result  property="contentsNo" column="contents_no" />
+		<result  property="thumbnail" column="thumbnail" />
+		<result  property="cFilename1" column="contents_filename1" />
+		<result  property="cFilename2" column="contents_filename2" />
+		<result  property="cFilename3" column="contents_filename3" />
+		<result  property="cFilename4" column="contents_filename4" />
+		<result  property="cFilename5" column="contents_filename5"/>
+	</resultMap>
+	
+	<resultMap  type="com.gr.ssgb.hostclass.model.HostClassVO" id="hostClass">
+		<result  property="cNo" column="c_no" />
+		<result  property="cName" column="C_NAME" />
+		<result  property="CateCode" column="CATEGORY_CODE" />
+		<result  property="hNo" column="H_NO" />
+		<result  property="lNo" column="L_NO" />
+		<result  property="cPrice" column="C_PRICE"/>
+		<result  property="ppnum" column="PPNUM" />
+		<result  property="cRegdate" column="C_REGDATE"/>
+		<result  property="cStart" column="C_START_TIME"/>
+		<result  property="cEnd" column="C_END_TIME" />
+		<result  property="endFlag" column="END_FLAG" />
+		<collection property="contentsVO" resultMap="contents"/>
+		
+	</resultMap> -->
+	
+	
+<!-- 	<resultMap type="com.gr.ssgb.hostclass.model.ClassAllVO" id="classAll">
+		<collection property="hostClassVO" resultMap="hostClass"/>
+		<collection property="contentsVO" resultMap="contents"/>
+	</resultMap> -->
+	<select id="selectClassCnt" parameterType="int" resultType="int">
+		select count(*) from hostclass where h_no = #{hNo}
+	</select>
+	
+	<select id="selectConcernbyCNo" parameterType="concernVo" resultType="int">
+		select count(*) from concern where c_no=#{cNo} and m_no=#{mNo}
+	</select>
+	
+
+	<select id="findBySearchClass" parameterType="hostClassVo" resultType="hostClassVo">
+		SELECT
+			  H.C_NO
+			, H.C_NAME
+			, H.CATEGORY_CODE
+			, H.H_NO
+			, H.L_NO
+			, H.C_PRICE
+			, H.PPNUM
+			, H.C_REGDATE
+			, H.C_START_TIME
+			, H.END_FLAG
+			, H.C_TIME
+			, H.FPNUM
+
+			, C.CATEGORY_CODE AS "category.categoryCode"
+			, C.CATEGORY_NAME AS "category.categoryName"
+
+			, L.L_NO AS "location.lNo"
+			, L.L_LATITUDE AS "location.lLatitude"
+			, L.L_LONGITUDE AS "location.lLongitude"
+			, L.ZIPCODE AS "location.zipcode"
+			, L.L_ADDRESS AS "location.lAddress"
+			, L.L_ADDRESS_DETAIL AS "location.lAddressDetail"
+			, L.H_NO AS "location.hNo"
+
+			, CC.CONTENTS_NO AS "contents.contentsNo"
+			, CC.C_NO AS "contents.cNo"
+			, CC.THUMBNAIL AS "contents.thumbnail"
+			, CC.CONTENTS_FILENAME1 AS "contents.contentsFilename1"
+			, CC.CONTENTS_FILENAME2 AS "contents.contentsFilename2"
+			, CC.CONTENTS_FILENAME3 AS "contents.contentsFilename3"
+			, CC.CONTENTS_FILENAME4 AS "contents.contentsFilename4"
+			, CC.CONTENTS_FILENAME5 AS "contents.contentsFilename5"
+			, CC.CONTENTS_CONTENT AS "contents.contentsContent"
+
+			, (SELECT ROUND(AVG(R_RATE), 1) FROM REVIEW WHERE C_NO = H.C_NO) AS TOTAL_R_RATE
+
+		FROM HOSTCLASS H
+		LEFT OUTER JOIN C_CONTENTS CC ON CC.C_NO = H.C_NO
+		LEFT OUTER JOIN CATEGORY C ON C.CATEGORY_CODE = H.CATEGORY_CODE
+		LEFT OUTER JOIN LOCATION L ON L.L_NO = H.L_NO
+		WHERE 1=1
+
+		<if test="@org.springframework.util.StringUtils@isEmpty(cName) == false">
+			AND H.C_NAME LIKE '%' || #{cName} || '%'
+		</if>
+
+		<if test="@org.springframework.util.StringUtils@isEmpty(categoryCode) == false">
+			AND H.CATEGORY_CODE = #{categoryCode}
+		</if>
+
+		<if test="@org.springframework.util.StringUtils@isEmpty(lAddress) == false">
+			AND L.L_ADDRESS LIKE '%' || #{lAddress} || '%'
+		</if>
+
+	</select>
+	
+	<update id="updateClassFlag" parameterType="int">
+		update hostclass set end_flag = 'Y' where c_no = #{cNo}
+	</update>
+</mapper>

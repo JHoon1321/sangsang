@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gr.ssgb.member.model.MemberDAO">	 
+	<insert id="insertMember" parameterType="memberVo">
+		<selectKey keyProperty="mNo" resultType="int" order="BEFORE">
+			select member_seq.nextval from dual
+		</selectKey>
+		insert into member(M_NO, M_ID, PWD)
+		values(#{mNo}, #{mId}, #{pwd}) 
+	</insert>
+	
+	<select id="selectMemberCnt" parameterType="string" resultType="int">
+		select count(*) from member where m_id=#{snsaccount}
+	</select>
+	<insert id="insertSnsMember" parameterType="memberVo">
+		<selectKey keyProperty="mNo" resultType="int" order="BEFORE">
+			select member_seq.nextval from dual
+		</selectKey>
+		insert into member(m_no, m_id, PWD, m_filename)
+		values(#{mNo}, #{mId}, #{pwd}, #{mFilename}) 
+	</insert>
+	<select id="checkIdPwd" parameterType="string" resultType="string">
+		select pwd from member where m_id=#{mId}
+	</select>
+	
+	<update id="updateAdditionalInfo" parameterType="memberVo">
+		update member set m_name = #{mName}, m_nickname=#{mNickname}, phone= #{phone}, bday= #{bday},
+		m_zipcode= #{mZipcode}, m_address= #{mAddress}, M_ADDRESS_DETAIL= #{mAddressDetail},
+		m_originalname=#{mOriginalname}, m_filesize=#{mFilesize}, m_filename=#{mFilename}
+		where m_id = #{mId} 
+	</update>
+	<update id="updateAdditionalSns" parameterType="memberVo">
+		update member set m_name = #{mName}, pwd=#{pwd} m_nickname=#{mNickname}, phone= #{phone}, bday= #{bday},
+		m_zipcode= #{mZipcode}, m_address= #{mAddress},m_addressDetail= #{mAddressDetail}, 
+		m_originalname=#{mOriginalname}, m_filesize=#{mFilesize}, m_filename=#{mFilename}
+		where m_id = #{mId} 
+	</update>
+	<select id="selectMno" parameterType="string" resultType="integer">
+		select m_no from member where m_id = #{mId}
+	</select>
+	
+	<insert id="insertPayment" parameterType="paymentVo" >
+		insert into payment(m_no, p_type, pay_nick, card_com, card_num, cvc, card_exp, bank_name, acc_num, c_pwd)
+		values(#{mNo},#{pType},#{payNick},#{cardCom},#{cardNum},#{cvc},#{cardExp},
+			#{bankName},#{accNum},#{cPwd})
+	</insert>
+	
+	<select id="selectMemberById" parameterType="string" resultType="memberVo">
+		select * from member where m_id =#{mId}
+	</select>
+	
+	<select id="selectBasicPayment" parameterType="int" resultType="paymentVo">
+		select * from payment where m_no=#{mNo}
+	</select>
+	
+	<update id="updatePaymentInfo" parameterType="paymentVo">
+		update payment
+		set p_type=#{pType}, pay_nick=#{payNick}, card_com=#{cardCom}, card_num=#{cardNum},
+			 cvc=#{cvc}, card_exp=#{cardExp}, bank_name=#{bankName}, acc_num=#{accNum}, c_pwd=#{cPwd}
+		where m_no = #{mNo}
+	</update>
+	
+	<update id="updatePwd" parameterType="memberVo">
+		update member
+		set pwd = #{pwd}
+		where m_id = #{mId}
+	</update>
+	<select id="findPaymentCnt" parameterType="int" resultType="int">
+		select count(*) from payment where m_no = #{mNo}
+	</select>
+	
+	<update id="updateNickname" parameterType="memberVo">
+		update member set m_nickname=#{mNickname} where m_id = #{mId}
+	</update>
+	
+	<update id="updateAddiWithoutProfile">
+		update member set m_name = #{mName}, m_nickname=#{mNickname}, phone= #{phone}, bday= #{bday},
+		m_zipcode= #{mZipcode}, m_address= #{mAddress}, M_ADDRESS_DETAIL= #{mAddressDetail}
+		where m_id = #{mId}
+	</update>
+	
+
+	<update id="updateMGrade" parameterType="memberVo">
+		update member
+		set m_grade = #{mGrade}
+		where m_no = #{mNo}
+	</update>
+	
+
+	<insert id="insertConcern" parameterType="concernVo">
+		<selectKey keyProperty="concernNo" resultType="int" order="BEFORE">
+			select CONCERN_SEQ.nextval from dual
+		</selectKey>
+		insert into concern(CONCERN_NO,C_NO,M_NO)
+		values(#{concernNo},#{cNo},#{mNo})
+	</insert>
+
+	
+	<delete id="deleteConcern" parameterType="int">
+		delete concern where c_no=#{cNo}
+	</delete>	
+	
+	<delete id="deleteMember" parameterType="int">
+		delete member where m_no=#{mNo}
+	</delete>	
+	
+	<select id="selectConcern" parameterType="int" resultType="concernVo">
+		select * from concern where m_no=#{mNo}
+	</select>
+	
+</mapper>
+
+

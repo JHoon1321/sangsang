@@ -5,6 +5,10 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.gr.ssgb.common.SearchVO;
+import com.gr.ssgb.host.model.HostVO;
+import com.gr.ssgb.member.model.ConcernVO;
+
 @Mapper
 public interface HostClassDAO {
 	List<CategoryVO> selectCategoryAll();
@@ -17,7 +21,25 @@ public interface HostClassDAO {
 	List<HostClassVO> selectClassAll();
 	String selectThumbnail(int cNo);
 	List<Map<String,Object>> selectClassAllContents();
-	List<Map<String,Object>> selectClassbyCNo(int cNo);
-	List<Map<String,Object>> selectClassCategory(String categoryName);
 	
+	List<Map<String,Object>> selectClassAllOfHost2(SearchVO searchVo); //페이징위한거
+	List<Map<String,Object>> selectClassAllContents2(SearchVO searchVo); //페이징위한거
+	int selectTotalRecord(SearchVO searchVo);
+	int selectTotalRecord2(SearchVO searchVo);
+	
+	List<Map<String,Object>> selectClassbyCNo(int cNo);
+	List<Map<String,Object>> selectClassAllOfHost(int hNo);
+	List<Map<String,Object>> selectClassLoc(String loc);
+	HostClassVO selectClassbyCNo2(int cNo);
+	List<Map<String,Object>> selectClassCategory(String categoryName);
+	int updateBylocation(LocationVO locationVo);
+	int updateByClass(HostClassVO hostClassVo);
+	int updateByContents(ContentsVO contentsVo);
+	int deleteContents(int cNo);
+	int deleteClass(int cNo);
+	int selectClassCnt(int hNo);
+	int selectConcernbyCNo(ConcernVO concernVo);
+	List<HostClassVO> findBySearchClass(HostClassVO hostClassVo);
+	int updateClassFlag(int cNo);
+	List<HostClassVO> selectAllHostClasses();
 }

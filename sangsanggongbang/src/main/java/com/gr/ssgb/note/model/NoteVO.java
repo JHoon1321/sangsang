@@ -2,7 +2,9 @@ package com.gr.ssgb.note.model;
 
 import java.sql.Timestamp;
 
-public class NoteVO {
+import com.gr.ssgb.common.SearchVO;
+
+public class NoteVO extends SearchVO {
 	// 쪽지 송신
 	private int noteNo;
 	private String noteTitle;
@@ -11,12 +13,24 @@ public class NoteVO {
 	private String noteDelFlg;
 	private String mId;
 	private String rNickname;
+	private String hId;
+	private String sNickname;
 
 	// 쪽지함(수신)
 	private int recNo;
 	private String recDelFalg;
 	private String recImpFlag;
 	private String recReadFlag;
+	
+	public String getsNickname() {
+		return sNickname;
+	}
+
+	public void setsNickname(String sNickname) {
+		this.sNickname = sNickname;
+	}
+
+	private int check;
 
 	public int getNoteNo() {
 		return noteNo;
@@ -32,6 +46,14 @@ public class NoteVO {
 
 	public void setNoteTitle(String noteTitle) {
 		this.noteTitle = noteTitle;
+	}
+
+	public String gethId() {
+		return hId;
+	}
+
+	public void sethId(String hId) {
+		this.hId = hId;
 	}
 
 	public String getNoteContent() {
@@ -106,12 +128,21 @@ public class NoteVO {
 		this.recReadFlag = recReadFlag;
 	}
 
+	public int getCheck() {
+		return check;
+	}
+
+	public void setCheck(int check) {
+		this.check = check;
+	}
+
 	@Override
 	public String toString() {
 		return "NoteVO [noteNo=" + noteNo + ", noteTitle=" + noteTitle + ", noteContent=" + noteContent
 				+ ", noteRegdate=" + noteRegdate + ", noteDelFlg=" + noteDelFlg + ", mId=" + mId + ", rNickname="
-				+ rNickname + ", recNo=" + recNo + ", recDelFalg=" + recDelFalg + ", recImpFlag=" + recImpFlag
-				+ ", recReadFlag=" + recReadFlag + "]";
+				+ rNickname + ", hId=" + hId + ", recNo=" + recNo + ", recDelFalg=" + recDelFalg + ", recImpFlag="
+				+ recImpFlag + ", recReadFlag=" + recReadFlag + ", sNickname=" + sNickname + ", check=" + check
+				+ ", toString()=" + super.toString() + "]";
 	}
 
 }

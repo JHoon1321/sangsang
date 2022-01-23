@@ -1,11 +1,14 @@
 package com.gr.ssgb.hostclass.model;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.gr.ssgb.common.SearchVO;
+import com.gr.ssgb.host.model.HostVO;
+import com.gr.ssgb.member.model.ConcernVO;
 
 @Service
 public class HostClassServiceImpl implements HostClassService{
@@ -70,18 +73,97 @@ public class HostClassServiceImpl implements HostClassService{
 	public List<Map<String, Object>> selectClassbyCNo(int cNo) {
 		return hostClassDao.selectClassbyCNo(cNo);
 	}
+	@Override
+	public HostClassVO selectClassbyCNo2(int cNo) {
+		return hostClassDao.selectClassbyCNo2(cNo);
+	}
 
 	@Override
 	public List<Map<String, Object>> selectClassCategory(String categoryName) {
 		return hostClassDao.selectClassCategory(categoryName);
 	}
 
+	@Override
+	public int updateBylocation(LocationVO locationVo) {
+		return hostClassDao.updateBylocation(locationVo);
+	}
+
+	@Override
+	public int updateByClass(HostClassVO hostClassVo) {
+		return hostClassDao.updateByClass(hostClassVo);
+	}
+
+	@Override
+	public int updateByContents(ContentsVO contentsVo) {
+		return hostClassDao.updateByContents(contentsVo);
+	}
+
+	@Override
+	public int deleteContents(int cNo) {
+		return hostClassDao.deleteContents(cNo);
+	}
+
+	@Override
+	public int deleteClass(int cNo) {
+		return hostClassDao.deleteClass(cNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectClassAllOfHost(int hNo) {
+		return hostClassDao.selectClassAllOfHost(hNo);
+	}
+
+	@Override
+	public int selectClassCnt(int hNo) {
+		return hostClassDao.selectClassCnt(hNo);
+	}
+
+	@Override
+	public List<HostClassVO> findBySearchClass(HostClassVO hostClassVo) {
+		return hostClassDao.findBySearchClass(hostClassVo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectClassLoc(String loc) {
+		return hostClassDao.selectClassLoc(loc);
+	}
+
+	@Override
+	public int selectConcernbyCNo(ConcernVO concernVo) {
+		return hostClassDao.selectConcernbyCNo(concernVo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectClassAllContents2(SearchVO searchVo) {
+		return hostClassDao.selectClassAllContents2(searchVo);
+	}
+
+	@Override
+	public int selectTotalRecord(SearchVO searchVo) {
+		return hostClassDao.selectTotalRecord(searchVo);
+	}
+
+	@Override
+	public int updateClassFlag(int cNo) {
+		return hostClassDao.updateClassFlag(cNo);
+	}
+
+	@Override
+	public List<HostClassVO> selectAllHostClasses() {
+		return hostClassDao.selectAllHostClasses();
+	}
+
+	@Override
+	public List<Map<String, Object>> selectClassAllOfHost2(SearchVO searchVo) {
+		return hostClassDao.selectClassAllOfHost2(searchVo);
+	}
+
+	@Override
+	public int selectTotalRecord2(SearchVO searchVo) {
+		return hostClassDao.selectTotalRecord2(searchVo);
+	}
 
 
-
-
-
-	
 
 
 	

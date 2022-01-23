@@ -1,6 +1,10 @@
 package com.gr.ssgb.host.model;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+
+import com.gr.ssgb.admin.model.MonthVO;
 
 @Mapper
 public interface HostDAO {
@@ -13,4 +17,29 @@ public interface HostDAO {
 
 	int insertHost(HostVO vo);
 
+	List<HostVO> selectAllHost();
+
+	int selectHostNo(String hId);
+
+	int updateAdditionalInfo(HostVO vo);
+
+	int updateAddiWithoutProfile(HostVO vo);
+
+	HostVO selectHostByHNo(int hNo);
+
+	int findClassCnt(MonthVO monVo);
+
+	Integer selectMyProfit(MonthVO monVo);
+
+	int updateHGrade(HostVO vo);
+
+	Integer selectUndoneClass(int hNo);
+
+	int updateHostDel(int hNo);
+
+	int deleteBanList(int hNo);
+
+	int deleteBlackList(int hNo);
+
+	int updatePwd(HostVO vo);
 }

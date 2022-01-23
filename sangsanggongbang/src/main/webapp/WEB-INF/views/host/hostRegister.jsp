@@ -4,37 +4,117 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ include file="../member/memberTop.jsp" %>
  <!-- Section -->
-<script src="${pageContext.request.contextPath}/resources/assets/js/jquery-3.6.0.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="<c:url value='/resources/assets/js/jquery-3.6.0.min.js'/>"></script>
 <script>
+	
 	$(function(){
-		$('#termChk3').click(function(){
-			open("<c:url value='/host/terms3'/>", "term3", "width=1600, height=1800px, left=0, top=0, resizable=yes, location=yes")
+		$('#hId').keyup(function(){
+			var id =$('#hId').val();
+			if(validate_userid(id) && id.length>=10){
+				$.ajax({
+					url:"<c:url value='/host/ajaxDuplicate'/>",
+					type:"post",
+					data:"hId="+id,
+					success:function(res){
+						var str="";
+						if(res){
+							$('#message').css('color', 'orange');
+							str="중복된 아이디입니다.";
+							$('#chkId').val('N');
+						}else{
+							str="사용가능한 아이디입니다.";
+							$('#message').css('color', 'green');
+							$('#chkId').val('Y');
+						}
+						
+						$('#message').html(str);
+					},
+					error:function(xhr, status, error){
+						alert("error : "+ error);
+					}
+				});
+			}else{
+				$('#message').css('color', 'red');
+				$('#message').css('visibility', 'visible');
+				$('#message').html('올바른 이메일 형식이 아닙니다.');
+				$('#chkId').val('N');
+			}
+		});
+		
+		$('#hBankName').focus(function(){
+			var id =$('#hId').val();
+			if(validate_userid(id) && id.length>=10){
+				$.ajax({
+					url:"<c:url value='/host/ajaxDuplicate'/>",
+					type:"post",
+					data:"hId="+id,
+					success:function(res){
+						var str="";
+						if(res){
+							$('#message').css('color', 'orange');
+							str="중복된 아이디입니다.";
+							$('#chkId').val('N');
+						}else{
+							str="사용가능한 아이디입니다.";
+							$('#message').css('color', 'green');
+							$('#chkId').val('Y');
+						}
+						
+						$('#message').html(str);
+					},
+					error:function(xhr, status, error){
+						alert("error : "+ error);
+					}
+				});
+			}else{
+				$('#message').css('color', 'red');
+				$('#message').css('visibility', 'visible');
+				$('#message').html('올바른 이메일 형식이 아닙니다.');
+				$('#chkId').val('N');
+			}
+		});
+		
+		$('#terms3').click(function(){
+			open("<c:url value='/member/terms2'/>", "term2", "width=1600, height=1800px, left=0, top=0, resizable=yes, location=yes")
 		});
 		
 		$('#additional').submit(function(){
-			var cardnum = $('#cardnum1').val()+$('#cardnum2').val()+$('#cardnum3').val()+$('#cardnum4').val();
-			$('#cardnum').val('cardnum');
-			if($('h_snsCheck').val()=='y'){
-				if($('#hPwd').val().length<1){
+			var pwd = $('#hPwd').val();
+			var id = $('#hId').val();
+			var pwdNec = "${pwdInputNecessity}";
+			
+			console.log(pwd);
+			console.log(id);
+			console.log(pwdNec);
+			if(pwdNec=='y'){
+				if(pwdNec=='y'&& $('#hPwd').val().length<1){
 					alert('비밀번호를 입력하세요');
 					$('#hPwd').focus();
 					event.preventDefault();
-				}else if ($('#hPwd2').val().length<1){ 
-					alert('2차 비밀번호를 확인하세요.');
-					$('#hPwd2').focus();
-					event.preventDefault();
-				}else if ($('#hPwd').val().length>0&&$('#hPwd2').val().length<10){
-					alert('비밀번호는 영문, 숫자 포함 10자리 이상입니다. ');
+				}else if(pwdNec=='y'&&$('#hPwd').val().length>=10&&!passwordRule.test(pwd)&& $('#hPwd').val()!=='temppassword'){
+					alert('비밀번호는 숫자, 영문자, 특수문자(!@#$%^&*-)를 포함한 10~20자리여야 합니다.');
 					$('#hPwd').focus();
 					event.preventDefault();
-				}else if($('#hPwd').val()!==$('#hPwd2').val()){
-					alert('2차 비밀번호가 일치하지 않습니다.');
+				}else if($('#hPwd2').val().length<1){
+					alert('2차 비밀번호를 입력하세요');
+					$('#hPwd2').focus();
+					event.preventDefault();
+				}else if($('#hPwd').val()!=$('#hPwd2').val()){
+					alert('비밀번호 확인이 일치하지 않습니다!');
 					$('#hPwd2').focus();
 					event.preventDefault();
 				}
 			}
-			if ($('#hName').val().length<1){
+			if($('#hId').val().length<1){
+				alert('아이디를 입력하세요.');
+				$('#hId').focus();
+				event.preventDefault();
+			}else if(!validate_userid(id)){
+				alert('아이디는 이메일 형식으로만 가능합니다.');
+				$('#hId').focus();
+				event.preventDefault();
+			}else if ($('#hName').val().length<1){
 				alert('성명을 입력해주세요.');
 				$('#hName').focus();
 				event.preventDefault();
@@ -78,11 +158,18 @@
 				alert('정산계좌를 입력하세요.');
 				$('#hAccount').focus();
 				event.preventDefault();
-			}/* else if(!$('#termChk3').is(':checked')){
-				alert('늘솜 이용약관에 동의해야합니다.');
-				$('#termChk3').focus();
+			}else if($('#chkId').val()=='N'||$('#chkId').val()==null){
+				alert('중복된 아이디입니다. 다른 아이디를 입력하세요.');
+				$('#hId').focus();
 				event.preventDefault();
-			} */
+			}else if(!$('#termChk2').is(':checked')){
+				alert('늘솜 이용약관에 동의해야합니다.');
+				$('#termChk2').focus();
+				event.preventDefault();
+			}
+
+			
+			
 		});
 		var passwordRule = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*-])[a-zA-Z0-9!@#$%^&*-]{8,20}$/;
 		
@@ -115,7 +202,10 @@
 		
 	});
 	
-	
+	function validate_userid(id){
+		var pattern = new RegExp(/^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i);
+		return pattern.test(id);
+	}
 	
 	function validate_phone(tel){
 		var pattern = new RegExp(/^[0-9]*$/g);
@@ -170,7 +260,7 @@ var InputImage =
 			<div class="col-12" style="width: 100%; height: 70px; background-color: #82AFC5; opacity: 0.9;">
 				<div class="collapse-brand" style="margin-top: 22px; margin-left: 45px; float: left;">
 					<a
-						href="${pageContext.request.contextPath }/resources/index.html">
+						href="${pageContext.request.contextPath }/host/hostInfo">
 						<img
 						src="${pageContext.request.contextPath }/resources/assets/img/brand/1230_top_light.png"
 						height="35" alt="Logo Impact">
@@ -184,7 +274,7 @@ var InputImage =
         </section>
       
        <!-- Section -->
-     <section class="min-vh-100 d-flex align-items-center section-image py-5 py-lg-0" style="width: 50%; background-color: #679093">
+     <section class="min-vh-100 d-flex align-items-center section-image py-5 py-lg-0" style="width: 50%; background-color: #82AFC5">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12">
@@ -203,13 +293,20 @@ var InputImage =
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><span class="fas fa-envelope"></span></span>
                                         </div>
-                                        
-                                        <input name="hId" class="form-control" type="text" id="exampleInputIcon4" aria-label="email adress"
-                                        <c:if test="${!empty sessionScope.hId }">
-                                        	readonly = "readonly"
-                                        	value="${sessionScope.hId}"
+                                        <input type ="hidden" name="chkId" id="chkId" 
+                                        <c:if test="${!empty vo.hId }">
+                                        value="N"
                                         </c:if>
-                                        <c:if test="${empty sessionScope.hId }">
+                                        <c:if test="${empty vo.hId }">
+                                        value="Y"
+                                        </c:if>
+                                        >
+                                        <input name="hId" class="form-control" type="text" id="hId" aria-label="email adress"
+                                        <c:if test="${!empty vo.hId }">
+                                        	readonly = "readonly"
+                                        	value="${vo.hId}"
+                                        </c:if>
+                                        <c:if test="${empty vo.hId }">
                                         	placeholder = "아이디를 입력하세요."
                                         </c:if>
                                         >
@@ -222,8 +319,11 @@ var InputImage =
                                         </c:if>
                                         >
                                     </div>
+                                    <div>
+                                    	<span id="message" style="visibility:hidden">아이디를 입력하세요.</span>
+                                    </div>
                                 </div>
-                               <c:if test="${cookie.new_sns.value=='y'}">
+                               <c:if test="${pwdInputNecessity=='y' ||empty pwdInputNecessity}">
 	                                <!-- Form -->
 	                              	<div class="row mb-0">
 		                                <div class="col-6">
@@ -256,8 +356,8 @@ var InputImage =
 		                                 </div>
 		                              </div>
 		                       </c:if>
-                               <c:if test="${cookie.new_sns.value=='n' }">
-                                   <input name ="hPwd" class="form-control" id="hPwd" type="hidden" aria-label="Password" value="${vo.pwd }">
+                               <c:if test="${pwdInputNecessity=='n' }">
+                                   <input name ="hPwd" class="form-control" id="hPwd" type="hidden" aria-label="Password" value="${vo.hPwd }">
                                </c:if>
 		                             
                                     <!-- End of Form -->
@@ -267,31 +367,21 @@ var InputImage =
                                    <div class="card border-light p-2" style ="margin-bottom: 10px">
 								        <div class="card-body p-2">
 								        <div style="float: left; margin-left: 0px; margin-top:0px; " >
-								        <input type="hidden" name="memFilename" value="${sessionScope.hFilename }">
-								            	<c:if test="${!empty sessionScope.hFilename && sessionScope.h_snsCheck=='y'}">
+								        <input type="hidden" name="memFilename" value="${vo.hFilename }">
+								            	<c:if test="${!empty vo.hFilename}">
 								            		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
 								            			<div id="older">
-								                			<img src="${sessionScope.hFilename }" id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
+								                			<img src="<c:url value='/resources/file_upload/${vo.hFilename }'/>" style="width: 129px; height:129px;"id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
 								                		</div>
 								           			 </div>
 								           			  <div class="input-group"  style = "text-align: center;">
-														  <input type="file" id="inputGroupFile02" class="form-control " name = "upfile" onchange="InputImage();" style="display: none;" value="${sessionScope.hFilename}">
-														  <label class="input-group-text btn btn-outline-primary" for="inputGroupFile02" style="margin-top: 30px">프로필 사진 업로드하기</label>
-														  
+														  <input type="file" id="upfile" class="form-control " name = "upfile" onchange="InputImage();" style="display: none;" value="${vo.hFilename}">
+														  <label class="input-group-text btn btn-outline-primary" for="upfile" style="margin-top: 30px">프로필 사진 업로드하기</label>
+														  <input type="hidden" name="memberFilename" value="${vo.hFilename }">
 													  </div>
 								                </c:if>
-								                <c:if test="${!empty sessionScope.hFilename && sessionScope.h_snsCheck=='n'}">
-								            		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
-								            			<div id="older">
-								                			<img src="${pageContext.request.contextPath }/resources/file_upload/${sessionScope.hFilename}" id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
-								                		</div>
-								           			 </div>
-								           			  <div class="input-group"  style = "text-align: center;">
-														  <input type="file" id="inputGroupFile02" class="form-control " name = "upfile"onchange="InputImage();" style="display: none;" value="${sessionScope.hFilename}">
-														  <label class="input-group-text btn btn-outline-primary" for="inputGroupFile02" style="margin-top: 30px">프로필 사진 업로드하기</label>
-													  </div>
-								                </c:if>
-								                <c:if test="${empty sessionScope.hFilename }">
+								               
+								                <c:if test="${empty vo.hFilename }">
 								            		<div class="profile-thumbnail small-thumbnail mx-auto" id="imagePreview">
 								            			<div id="older">
 								                			<img src="${pageContext.request.contextPath }/resources/assets/img/default.png" id="nImg" class="card-img-top rounded-circle border-white" alt="프로필사진">
@@ -311,28 +401,28 @@ var InputImage =
 			                                                <span class="input-group-text"><i class="fas fa-id-card"></i></span>
 			                                            </div>
                                            				<input name ="hName" class="form-control" id="hName" type="text"  
-                                           				<c:if test="${!empty vo.mName}">
-                                           					value="${vo.mName}"
+                                           				<c:if test="${!empty vo.hName}">
+                                           					value="${vo.hName}"
                                            				</c:if>
-                                           				<c:if test="${empty vo.mName}">
+                                           				<c:if test="${empty vo.hName}">
                                            					placeholder="이름을 입력하세요."
                                            				</c:if>
                                            				>
                                             		</div>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8 mb-3" style = "float: left; margin-left: 10px;">
+                                            <div class="col-md-8" style = "float: left; margin-left: 10px;">
                                                 <div class="form-group">
                                                    <label for="hNickname">닉네임</label>
-                                                    <div class="input-group mb-4">
+                                                    <div class="input-group">
 			                                            <div class="input-group-prepend">
 			                                                <span class="input-group-text"><i class="far fa-smile"></i></span>
 			                                            </div>
                                            				<input name ="hNickname" class="form-control" id="hNickname" type="text" 
-                                           				<c:if test="${!empty vo.mNickname}">
-                                           					value="${vo.mNickname}"
+                                           				<c:if test="${!empty vo.hNickname}">
+                                           					value="${vo.hNickname}"
                                            				</c:if>
-                                           				<c:if test="${empty vo.mNickname}">
+                                           				<c:if test="${empty vo.hNickname}">
                                            					placeholder="닉네임을 입력해주세요."
                                            				</c:if>
                                            				>
@@ -351,10 +441,10 @@ var InputImage =
 			                                                <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
 			                                            </div>
 	                                           	 		<input name ="hPhone" class="form-control" id="hPhone" maxlength="11" type="text"
-	                                           	 		<c:if test="${!empty vo.phone}">
-                                           					 value="${vo.phone}"
+	                                           	 		<c:if test="${!empty vo.hPhone}">
+                                           					 value="${vo.hPhone}"
                                            				</c:if>
-                                           				<c:if test="${empty vo.phone}">
+                                           				<c:if test="${empty vo.hPhone}">
                                            					placeholder="휴대폰 번호를 입력해주세요. (-제외)" 
                                            				</c:if>
 	                                           	 		>
@@ -369,10 +459,10 @@ var InputImage =
 			                                                <span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
 			                                            </div>
 	                                           			 <input name ="hBday" class="form-control" id="hBday" maxlength="6" type="text" 
-	                                           			 <c:if test="${!empty vo.bday}">
-                                           					 value="${vo.bday}"
+	                                           			 <c:if test="${!empty vo.hBday}">
+                                           					 value="${vo.hBday}"
                                            				 </c:if>
-                                           				 <c:if test="${empty vo.bday}">
+                                           				 <c:if test="${empty vo.hBday}">
                                            					 placeholder="생년월일 6자리를 입력하세요. ex)950720"
                                            				 </c:if>
 	                                           			 >
@@ -391,11 +481,11 @@ var InputImage =
 			                                                <span class="input-group-text"><i class="fas fa-compass"></i></span>
 			                                            </div>
 			                                           	<input name ="hZipcode" class="form-control" id="zipcode" readonly="readonly" placeholder="우편번호를 검색하세요." type="text"  aria-describedby="button-addon2" 
-			                                           	<c:if test="${!empty vo.bday}">
-                                           					 value="${vo.bday}"
+			                                           	<c:if test="${!empty vo.hZipcode}">
+                                           					 value="${vo.hZipcode}"
                                            				</c:if>
-                                           				<c:if test="${empty vo.bday}">
-                                           					 placeholder="생년월일 6자리를 입력하세요. ex)950720"
+                                           				<c:if test="${empty vo.hZipcode}">
+                                           					 placeholder="우편번호를 검색하세요. ex)950720"
                                            				</c:if>
 			                                           	>
 			                                           	<button type="button" id="button-addon2" class="btn btn-outline-primary btn-sm" onclick="kakaopost()" >우편번호 검색</button>
@@ -410,10 +500,10 @@ var InputImage =
 			                                                <span class="input-group-text"><i class="far fa-compass"></i></span>
 			                                            </div>
                                            			  <input name ="hAddress" class="form-control" id="address" readonly="readonly" type="text" 
-                                           			  	<c:if test="${!empty vo.mAddress}">
-                                           					value="${vo.mAddress}"
+                                           			  	<c:if test="${!empty vo.hAddress}">
+                                           					value="${vo.hAddress}"
                                            				</c:if>
-                                           				<c:if test="${empty vo.mAddress}">
+                                           				<c:if test="${empty vo.hAddress}">
                                            					 placeholder="우편번호 검색시 자동으로 입력됩니다."
                                            				</c:if>
                                            			  >
@@ -429,10 +519,10 @@ var InputImage =
                                             <span class="input-group-text"><i class="far fa-compass"></i></span>
                                         </div>
                                        	<input name ="hAddressDetail" class="form-control" id="hAddressDetail"  type="text" 
-                                       	<c:if test="${!empty vo.mAddressDetail}">
-                          					value="${vo.mAddressDetail}"
+                                       	<c:if test="${!empty vo.hAddressDetail}">
+                          					value="${vo.hAddressDetail}"
                           				</c:if>
-                          				<c:if test="${empty vo.mAddressDetail}">
+                          				<c:if test="${empty vo.hAddressDetail}">
                           					 placeholder="상세주소를 입력하세요. ex)대원빌 101호" 
                           				</c:if>
                                        	>
@@ -476,11 +566,11 @@ var InputImage =
                                         </div>
                                     <!-- End of Form -->
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="termChk3">
+                                        <input class="form-check-input" type="checkbox" id="termChk2">
                                         <label class="form-check-label" for="terms">
                                             <span class="small"><a class="text-secondary" href="#" id="terms3">약관</a>에 동의합니다. </span> 
                                         </label>
-                                        <span class="small" style="float: right;"><a class="text-secondary" href="<c:url value='/host/main'/> " >늘솜 메인 홈페이지로 이동하기</a></span>
+                                        <span class="small" style="float: right;"><a class="text-secondary" href="<c:url value='/host/hostIndex'/> " >늘솜 메인 홈페이지로 이동하기</a></span>
                                     </div>
                                 <button type="submit" class="btn btn-block btn-primary">늘솜계정 등록하기</button>
                             </form>

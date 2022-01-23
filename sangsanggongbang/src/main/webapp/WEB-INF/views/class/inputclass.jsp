@@ -3,7 +3,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@include file="../inc/top.jsp"%>
+<%@ include file="../inc/new_top_host.jsp"  %>
 
 <section style="margin-top: 150px">
 	<div class="container">
@@ -26,7 +26,7 @@
 								<!-- 나중에 hidden 으로 바꾸기 -->
 								<%-- <input type="text" name="hNo" value="${param.hNo }"> --%>
 								<!-- 임의로 1번호스트로 테스트 -->
-								<input type="hidden" name="hNo" value="1">
+								<input type="hidden" name="hNo" value="${hNo }">
 								<input type="hidden" name="endFlag" value="N">
 								
 								
@@ -35,7 +35,7 @@
 										<div class="form-group">
 											<label for="class_name">클래스 이름</label> <input
 												class="form-control" id="cName" type="text"
-												placeholder="클래스이름을 입력해주세요." name="cName">
+												placeholder="클래스이름을 입력해주세요." name="cName" required>
 										</div>
 										<div class="invalid-feedback" data-sb-feedback="message:required">클래스이름을 입력하세요</div>
 									</div>
@@ -49,8 +49,8 @@
 									<div class="col-md-6 mb-3">
 										<div class="form-group">
 											<label for="category">클래스 유형</label> <select
-												class="custom-select" id="category" name="CateCode">
-												<option disabled="disabled" selected="selected" value="">
+												class="custom-select" id="category" name="CateCode" required>
+												<option disabled="disabled" selected="selected" value="" >
 													클래스 유형을 선택해주세요.</option>
 												<c:forEach var="vo" items="${ clist}">
 													<option value="${vo.categoryCode }">${vo.categoryName }</option>
@@ -60,7 +60,7 @@
 									</div>
 									<div class="col-md-6 mb-3">
 										<div class="form-group">
-											<label for="ppnum">클래스 진행인원</label> <input
+											<label for="ppnum">클래스 진행인원</label> <input required
 												class="form-control" id="number" type="number" min="1"
 												placeholder="인원선택" name="ppnum">
 										</div>
@@ -69,23 +69,23 @@
 								<div class="row align-items-center">
 									<div class="col-md-6 mb-3">
 										<div class="form-group">
-											<label for="class_name">클래스 가격</label> <input
-												class="form-control" id="cprice" type="text"
+											<label for="class_name">클래스 가격</label> <input required
+												class="form-control" id="cprice" type="number" min="0"
 												placeholder="클래스가격을 입력해주세요." name="cPrice">
 										</div>
 									</div>
 								</div>
-								<div class="input-daterange datepicker row align-items-center">
+								<div class="input-daterange datepicker row align-items-center" >
 									<div class="col-md-6 mb-3">
 										<div class="form-group">
-										<label for="category">클래스 날짜(월/일/년도)</label>
+										<label for="frmdate">클래스 날짜(월/일/년도)</label>
 											<div class="input-group input-group-border">
 												<div class="input-group-prepend">
 													<span class="input-group-text"> <i
 														class="far fa-calendar-alt">&nbsp;시작날짜</i></span>
 												</div>
-												<input class="form-control" placeholder="Start date"
-													type="text" value="${now }" name="cStart">
+												<input class="form-control datepicker" placeholder="${now }"
+													type="text" id="date" name="cStart" required min="${now }">
 											</div>
 										</div>
 									</div>
@@ -103,8 +103,9 @@
 									</div> --%>
 									<div class="col-md-6 mb-3">
 										<div class="form-group">
-											<label for="category">클래스 시간</label> <select
-												class="custom-select" id="cTime" name="cTime">
+											<label for="category">클래스 시간</label>
+											 <select
+												class="custom-select" id="cTime" name="cTime" required>
 												<option disabled="disabled" selected="selected" value="">
 													시간을 선택해주세요</option>
 													<option value="1">1:00</option>
@@ -227,7 +228,8 @@
 
 								</div>
 								<div class="mt-3">
-									<button type="submit" class="btn btn-primary">등록하기</button>
+									<button type="submit" class="btn btn-primary" onclick="check();">등록하기</button>
+									<!-- <button type="button" class="btn btn-primary"  onclick="check();">등록하기</button> -->
 								</div>
 
 							</form>
@@ -253,22 +255,45 @@
 
 
 <script type="text/javascript">
+function check(){
+	
+      if ($('#zipcode').val().length<1){
+         alert('우편번호를 검색해주세요.');
+         $('#zipcode').focus();
+         event.preventDefault();
+     	return false;
+	 }
+      
+   /*    let now = ${now};
+      let date = $('#date').getTime();
+      
+	  if(Number(date)<Number(now)){
+		  alert('현재날짜보다 작은 날짜입니다.');
+		  $('#date').focus();
+		  event.preventDefault();
+		  return false;
+	  } */
+      
+	// document.frmClass.submit(); // 서브밋으로보내기
+};
 
+
+/*
 $(document).ready(function()
 		// input file 파일 첨부시 fileCheck 함수 실행
 		{
 			$("#input_file").on("change", fileCheck);
 		});
-/**
- * 첨부파일로직
- */
+
+ // 첨부파일로직
+
 $(function () {
     $('#btn-upload').click(function (e) {
         e.preventDefault();
         $('#input_file').click();
     });
 });
-
+ 
 // 파일 현재 필드 숫자 totalCount랑 비교값
 var fileCount = 0;
 // 해당 숫자를 수정하여 전체 업로드 갯수를 정한다.
@@ -321,9 +346,8 @@ function fileDelete(fileNum){
     console.log(content_files);
 }
 
-/*
- * 폼 submit 로직
- */
+ //폼 submit 로직
+ 
 	function registerAction(){
 		
 	var form = $("form")[0];        
@@ -334,9 +358,9 @@ function fileDelete(fileNum){
 				 formData.append("article_file", content_files[x]);
 			}
 		}
-   /*
-   * 파일업로드 multiple ajax처리
-   */    
+  
+   //파일업로드 multiple ajax처리
+     
 	$.ajax({
    	      type: "POST",
    	   	  enctype: "multipart/form-data",
@@ -357,14 +381,10 @@ function fileDelete(fileNum){
    	    });
    	    return false;
 	}
+ */
 
 
-	$('.datepicker')[0] && $('.datepicker').each(function() {
-		$('.datepicker').datepicker({
-			disableTouchKeyboard : true,
-			autoclose : false
-		});
-	});
+
 
 	function kakaopost() {
 		new daum.Postcode({
@@ -376,4 +396,4 @@ function fileDelete(fileNum){
 	}
 </script>
 
-<%@include file="../inc/bottom.jsp"%>
+<%@include file="../inc/bottom_host.jsp"%>

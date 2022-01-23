@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gr.ssgb.host.model.HostDAO">
+	<select id="checkIdPwd" parameterType="string" resultType="string">
+		select h_pwd from host where h_id=#{hId}
+	</select>
+	
+	<select id="selectHostCnt" parameterType="string" resultType="int">
+		select count(*) from host where h_id=#{hId}
+	</select>
+	
+	<select id="selectHostById" parameterType="string" resultType="hostVo">
+		select * from host where h_id =#{hId}
+	</select>
+	
+	<insert id="insertHost" parameterType="hostVo">
+		<selectKey keyProperty="hNo" resultType="int" order="BEFORE">
+			select host_seq.nextval from dual
+		</selectKey>
+		insert into host(h_no, h_id, h_pwd, h_name, h_nickname, h_bday, h_phone, h_zipcode, h_address, h_address_detail, h_account,
+		h_bank_name, h_filename, h_filesize, h_originalname)
+		values(#{hNo}, #{hId}, #{hPwd}, #{hName}, #{hNickname}, #{hBday}, #{hPhone}, #{hZipcode}, #{hAddress}, 
+		#{hAddressDetail}, #{hAccount}, #{hBankName}, #{hFilename}, #{hFilesize}, #{hOriginalname})
+	</insert>
+	
+	<select id="selectAllHost" resultType="hostVo">
+		select * from host
+	</select>
+	
+	<select id="selectHostNo" parameterType="string" resultType="int">
+		select h_no from host where h_id=#{hId}
+	</select> 
+	
+	<update id="updateAdditionalInfo" parameterType="hostVo">
+		update host set h_name = #{hName}, h_nickname=#{hNickname}, h_phone= #{hPhone}, h_bday= #{hBday},
+		h_zipcode= #{hZipcode},h_account = #{hAccount}, h_bank_name=#{hBankName}, h_address= #{hAddress}, h_ADDRESS_DETAIL= #{hAddressDetail},
+		h_originalname=#{hOriginalname}, h_filesize=#{hFilesize}, h_filename=#{hFilename}
+		where h_id = #{hId} 
+	</update>
+	
+	<update id="updateAddiWithoutProfile" parameterType="hostVo">
+		update host set h_name = #{hName}, h_nickname=#{hNickname}, h_phone= #{hPhone}, h_bday= #{hBday},
+		h_zipcode= #{hZipcode}, h_address= #{hAddress}, h_ADDRESS_DETAIL= #{hAddressDetail},h_account = #{hAccount}, h_bank_name=#{hBankName}
+		where h_id = #{hId}
+	</update>
+	
+	<select id="selectHostByHNo" parameterType="int" resultType="hostVo">
+		select * from host where h_no = #{hNo}
+	</select>
+	
+	<select id="findClassCnt" parameterType="monthVo" resultType="int">
+		select count(*) from balancing  
+		<![CDATA[
+		   where b_req_date > TO_DATE(#{startDate}) and b_req_date < TO_DATE(#{endDate}) and h_no = #{hNo}
+		    ]]>
+	</select>
+	
+	<select id="selectMyProfit" parameterType="monthVo" resultType="int">
+		select sum(total) 
+		from
+		(
+		    select (c_price*ea) as total 
+		    from payview where h_No = #{hNo}
+		    <![CDATA[
+		     and pay_date > TO_DATE(#{startDate}) and pay_date < TO_DATE(#{endDate}) and refund='payed'
+		    ]]>
+		)
+	</select>
+	
+	<update id="updateHGrade" parameterType="hostVo">
+		update host set h_grade = #{hGrade} where h_no = #{hNo}
+	</update>
+	
+	<select id="selectUndoneClass" parameterType="int" resultType="int">
+		select count(*) from hostclass where h_no = #{hNo} and end_flag='N'
+	</select>
+	
+	<update id="updateHostDel" parameterType="int">
+		update host set delflag='Y' where h_no = #{hNo}
+	</update>
+	
+	<delete id="deleteBanList" parameterType="int">
+		delete from ban where h_no=#{hNo}
+	</delete>
+	
+	<delete id="deleteBlackList" parameterType="int">
+		delete from blacklist where h_no = #{hNo}
+	</delete>
+	
+	<update id="updatePwd" parameterType="hostVo">
+		update host set h_pwd = #{hPwd} where h_id = #{hId}
+	</update>
+	
+</mapper>

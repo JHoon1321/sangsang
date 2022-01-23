@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.gr.ssgb.memberInquiry.model.MemberInquiryDAO">
+ 	<!-- 검색기능 -->
+	<sql id="searchWhereMB">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			 ${searchCondition} like '%' || #{searchKeyword} ||
+			'%' and 
+		</if>
+	</sql>
+	<sql id="searchWhereH">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			where ${searchCondition} like '%' || #{searchKeyword} ||
+			'%' 
+		</if>
+	</sql>
+<!-- 	<sql id="searchWhereB">
+		<if test="searchKeyword!=null and searchKeyword!=''">
+			${searchCondition} like '%' || #{searchKeyword} ||
+			'%'and
+		</if>
+	</sql> -->
+ 	<!-- 멤버 리스트 -->
+	<select id="selectMemberAll" parameterType="searchVo"
+		resultType="memberVo">
+		select *
+		from
+		(
+		select rownum as RNUM, A.*
+		from
+		(
+		select * from member
+		where
+		<include refid="searchWhereMB"></include>
+		 M_BAN_FLAG ='N'
+		order by m_no
+		)A
+		)
+		<![CDATA[where RNUM>#{firstRecordIndex} and 
+		RNUM<=#{firstRecordIndex}+ #{recordCountPerPage}
+		]]>
+	</select>
+
+	<select id="selectMemberTotalRecord" parameterType="searchVo"
+		resultType="int">
+		select count(*) from member
+	</select>
+
+	<select id="selectMemberByNo" parameterType="int"
+		resultType="memberVo">
+		select * from member where m_no=#{mNo}
+	</select>
+
+ 	<!-- 호스트 리스트 -->
+
+	<select id="selectHostAll" parameterType="searchVo"
+		resultType="hostVo">
+		select *
+		from
+		(
+		select rownum as RNUM, A.*
+		from
+		(
+		select * from host
+		<include refid="searchWhereH"></include>
+		order by h_no
+		)A
+		)
+		<![CDATA[where RNUM>#{firstRecordIndex} and 
+		RNUM<=#{firstRecordIndex}+ #{recordCountPerPage}
+		]]>
+	</select>
+
+	<select id="selectHostTotalRecord" parameterType="searchVo"
+		resultType="int">
+		select count(*) from host
+	</select>
+
+ 	<!-- 벤 리스트 -->
+	<select id="selectBanAll" parameterType="searchVo"
+		resultType="map">
+		select *
+		from
+		(
+		select rownum as RNUM, A.*
+		from
+		(
+		select * from banView
+		where
+		<include refid="searchWhereMB"></include>
+		M_BAN_FLAG ='Y'
+		order by bno
+		)A
+		)
+		<![CDATA[where RNUM>#{firstRecordIndex} and 
+		RNUM<=#{firstRecordIndex}+ #{recordCountPerPage}
+		]]>
+	</select>
+
+	<select id="selectBanTotalRecord" parameterType="searchVo"
+		resultType="int">
+		select count(*) from ban
+	</select>
+
+	<update id="insertBanF" parameterType="banVo"> <!-- 밴플래그 처리 -->
+		update member
+		set M_BAN_FLAG
+		='Y'
+		where M_NO =#{mNo}
+	</update>
+
+	<insert id="insertBan" parameterType="banVo"> <!-- 밴플래그 처리 -->
+		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+			select ban_seq.nextval from dual
+		</selectKey>
+		insert into ban(BNO,M_NO,BCS,BC)
+		values(#{bno},#{mNo},#{bcs},#{bc})
+	</insert>
+	
+	<update id="deleteBanF" parameterType="banVo">
+		update member
+		set M_BAN_FLAG
+		='N'
+		where M_NO =#{mNo}
+	</update>
+
+	<delete id="deleteBan" parameterType="banVo">
+		delete ban
+		where m_No=#{mNo}
+	</delete>
+	
+	<select id="checkBan" parameterType="String" resultType="String">
+		select m_ban_flag from banview
+		where m_id=#{mId}
+	</select>
+	
+	<select id="classUser" parameterType="int" resultType="map">
+		select * from classuserview
+		where h_no=#{hNo} and m_Id like '%'
+	</select>
+	<select id="selectTotalClassUser" parameterType="ClassUserVo" resultType="int">
+		select count(*) from classuserview
+		where h_no=#{hNo} and m_Id like '%'
+	</select>
+</mapper>

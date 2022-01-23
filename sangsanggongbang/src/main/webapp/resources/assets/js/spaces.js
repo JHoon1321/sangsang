@@ -352,6 +352,18 @@ $(document).ready(function () {
             autoclose: false,
         });
     });
+  
+	//데이트피커
+	$('.selectdate')[0] && $('.selectdate').each(function () {
+        $('.selectdate').datepicker({
+            dateFormat: 'yy-mm-dd',
+            prevText:'이전 달',
+            nextText:'다음 달',
+            monthNames:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+            minDate:0,
+        });
+    });
+   
 
     $('.availability')[0] && $('.availability').each(function () {
         $('.availability').datepicker({
@@ -733,7 +745,7 @@ $(document).ready(function () {
         ]
     });
 
-    // Review stars rating
+/*    // Review stars rating
     $('.stars-rating .star').on('mouseover', function() {
         var rating = $(this).attr('data-rating-value');
         $('.stars-rating .star').each(function(value) {
@@ -770,7 +782,52 @@ $(document).ready(function () {
                 $(this).removeClass('fas');
             });
         }
-    });
+    });*/
+
+// Review stars rating
+ $('.stars-rating .star').on('click', function() {
+    var rating = $(this).attr('data-rating-value'); //마우스가 올라가있는게 몇번째 별인지
+    /* $('.stars-rating .star').each('mousehover',function(value) {
+        if (value + 1 <= rating) { //별을 테두리만 칠한다
+            $(this).removeClass('text-gray');
+            $(this).addClass('text-warning');
+        }
+        if (value >= rating) { // 칠해진 별을 
+            $(this).addClass('text-gray');
+            $(this).removeClass('text-warning');
+            $(this).removeClass('fas');
+            $(this).addClass('far');
+        }
+    }); */
+   /*  $(this).on('click', function() { */
+        $(this).parent().addClass('rated');
+        $('.stars-rating .star').each(function(value) {
+            if (value + 1 <= rating) {
+                $(this).removeClass('text-gray');
+                $(this).addClass('text-warning');
+                $(this).removeClass('far');
+                $(this).addClass('fas');
+            }else if(value >=rating){
+            	$(this).addClass('text-gray');
+                $(this).removeClass('text-warning');
+                $(this).addClass('far');
+                $(this).removeClass('fas');
+            }
+        });
+        $('#rRate').val(rating);
+/*     }); */
+}); 
+ $('.stars-rating').on('mouseleave', function() {
+    if (!$(this).hasClass('rated')) {
+        $('.stars-rating .star').each(function() {
+            $(this).addClass('text-gray');
+            $(this).removeClass('text-warning');
+            $(this).addClass('far');
+            $(this).removeClass('fas');
+        });
+    }
+}); 
+
 
     if($('#profile-sidebar').length) {
         var profileSidebar = new StickySidebar('#profile-sidebar', {
